@@ -1,8 +1,10 @@
 package be.technobel.ylorth.reservastock_rest.service.mapper;
 
-import be.technobel.ylorth.reservastock_rest.model.dto.UserDTO;
+import be.technobel.ylorth.reservastock_rest.model.dto.AuthDTO;
+import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import be.technobel.ylorth.reservastock_rest.model.entity.User;
 import be.technobel.ylorth.reservastock_rest.model.form.RegisterForm;
+import be.technobel.ylorth.reservastock_rest.model.form.StudentRegisterForm;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -16,7 +18,17 @@ public class UserMapper {
         this.demandeMapper = demandeMapper;
     }
 
-    public UserDTO toDTO(User entity){
+    public AuthDTO toDTO(User entity){
+        if(entity == null)
+            return null;
+
+        return AuthDTO.builder()
+                .login(entity.getLogin())
+                .role(entity.getRole())
+                .build();
+    }
+
+/*    public UserDTO toDTO(User entity){
 
         if(entity == null)
             return null;
@@ -37,7 +49,7 @@ public class UserMapper {
                                 .collect(Collectors.toSet())
                 )
                 .build();
-    }
+    }*/
 
     public User toEntity(RegisterForm form){
 
@@ -53,6 +65,24 @@ public class UserMapper {
         user.setEmail(form.getEmail());
         user.setTelephone(form.getTelephone());
         user.setRole(form.getRole());
+
+        return user;
+    }
+
+    public User toEntity(StudentRegisterForm form){
+
+        if(form == null)
+            return null;
+
+        User user = new User();
+
+        user.setAdresse(form.getAdresse());
+        user.setNom(form.getNom());
+        user.setPrenom(form.getPrenom());
+        user.setMotDePasse(form.getMotDePasse());
+        user.setEmail(form.getEmail());
+        user.setTelephone(form.getTelephone());
+        user.setRole(Role.ETUDIANT);
 
         return user;
     }
