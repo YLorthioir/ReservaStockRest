@@ -1,6 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.service.impl;
 
 import be.technobel.ylorth.reservastock_rest.exception.EmailAlreadyTakenException;
+import be.technobel.ylorth.reservastock_rest.model.dto.UserDTO;
 import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import be.technobel.ylorth.reservastock_rest.model.entity.User;
 import be.technobel.ylorth.reservastock_rest.model.form.LoginForm;
@@ -15,6 +16,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import be.technobel.ylorth.reservastock_rest.model.dto.AuthDTO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -89,5 +93,26 @@ public class AuthServiceImpl implements AuthService {
                 .login(user.getLogin())
                 .role(user.getRole())
                 .build();
+    }
+
+    @Override
+    public Long findByLogin(String login) {
+        return userRepository.findByLogin(login).get().getId();
+    }
+
+
+
+    @Override
+    public void validate(Long id) {
+        User user = userRepository.findById(id).get();
+        user.setActif(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public List<UserDTO> getAllUnvalidate() {
+        return userRepository.getAllUnvalidate().stream()
+                .map(user -> userMapper.toUserDTO(user))
+                .collect(Collectors.toList());
     }
 }

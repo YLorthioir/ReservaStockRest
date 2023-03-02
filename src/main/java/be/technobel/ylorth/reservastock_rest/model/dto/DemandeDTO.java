@@ -1,7 +1,5 @@
 package be.technobel.ylorth.reservastock_rest.model.dto;
 
-import be.technobel.ylorth.reservastock_rest.model.entity.Salle;
-import be.technobel.ylorth.reservastock_rest.model.entity.User;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,11 +16,11 @@ public class DemandeDTO {
     private String raisonRefus;
     private int minutes;
 
-    private User user;
+    private Long userId;
 
-    private User admin;
+    private Long adminId;
 
-    private Salle salle;
+    private Long salleId;
 
     private Set<MaterielDTO> materiels = new LinkedHashSet<>();
 

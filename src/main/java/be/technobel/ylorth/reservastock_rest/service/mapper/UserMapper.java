@@ -1,6 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.service.mapper;
 
 import be.technobel.ylorth.reservastock_rest.model.dto.AuthDTO;
+import be.technobel.ylorth.reservastock_rest.model.dto.UserDTO;
 import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import be.technobel.ylorth.reservastock_rest.model.entity.User;
 import be.technobel.ylorth.reservastock_rest.model.form.RegisterForm;
@@ -28,7 +29,7 @@ public class UserMapper {
                 .build();
     }
 
-/*    public UserDTO toDTO(User entity){
+    public UserDTO toUserDTO(User entity){
 
         if(entity == null)
             return null;
@@ -41,15 +42,9 @@ public class UserMapper {
                 .role(entity.getRole())
                 .adresse(entity.getAdresse())
                 .email(entity.getEmail())
-                .motDePasse(entity.getMotDePasse())
                 .telephone(entity.getTelephone())
-                .demandes(
-                        entity.getDemandes().stream()
-                                .map(demandeMapper::toDTO)
-                                .collect(Collectors.toSet())
-                )
                 .build();
-    }*/
+    }
 
     public User toEntity(RegisterForm form){
 

@@ -33,11 +33,6 @@ public class SalleMapper {
                         .map(materielMapper::toDTO)
                         .collect(Collectors.toSet())
                 )
-                .reserve(entity.getReserve().stream()
-                        .map(demandeMapper::toDTO)
-                        .collect(Collectors.toSet())
-
-                )
 
                 .build();
     }

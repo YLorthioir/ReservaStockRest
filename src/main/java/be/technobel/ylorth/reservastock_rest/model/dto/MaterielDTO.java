@@ -2,7 +2,6 @@ package be.technobel.ylorth.reservastock_rest.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import java.util.Set;
 
 @Data
 @Builder

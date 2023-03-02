@@ -13,8 +13,6 @@ public class SalleDTO {
     private int capacite;
     private String nom;
     private boolean pourPersonnel;
-    private Set<DemandeDTO> reserve;
-
     private Set<MaterielDTO> contient = new LinkedHashSet<>();
 
 }

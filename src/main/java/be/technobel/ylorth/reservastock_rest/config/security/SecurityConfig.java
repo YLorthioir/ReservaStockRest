@@ -36,8 +36,25 @@ public class SecurityConfig {
         http.authorizeHttpRequests(
             registry -> registry
 
+                    .requestMatchers("/auth/login").anonymous()
+                    .requestMatchers("/auth/studentRegister").anonymous()
+                    .requestMatchers("/auth/register").hasRole("ADMIN")
+                    .requestMatchers("/toValidate").hasRole("ADMIN")
+                    .requestMatchers("/{id:[0-9]+}").hasRole("ADMIN")
 
-                    .anyRequest().permitAll()
+                    .requestMatchers(HttpMethod.POST, "/salle/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/salle/**").hasRole("ADMIN")
+
+                    .requestMatchers(HttpMethod.POST, "/materiel/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/materiel/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/materiel/**").hasRole("ADMIN")
+
+                    .requestMatchers("/demande/all").hasRole("ADMIN")
+                    .requestMatchers("/demande/{id:[0-9]+}/confirm").hasRole("ADMIN")
+                    .requestMatchers("/demande/**").authenticated()
+
+
+                    .anyRequest().authenticated()
 
         );
 

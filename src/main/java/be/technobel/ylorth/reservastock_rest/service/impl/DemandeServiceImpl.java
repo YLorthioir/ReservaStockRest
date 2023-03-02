@@ -47,16 +47,15 @@ public class DemandeServiceImpl implements DemandeService {
 
     @Override
     public List<DemandeDTO> getAllUnconfirm() {
-        return demandeRepository.findAll().stream()
+        return demandeRepository.getAllUnconfirmed().stream()
                 .map(demandeMapper::toDTO)
-                .filter(d -> d.getRaisonRefus()==null&&d.getAdmin()==null)
-                .toList();
+                .collect(Collectors.toList());
     }
     @Override
     public List<DemandeDTO> getAllByUser(Long id){
         return demandeRepository.findAll().stream()
                 .map(demandeMapper::toDTO)
-                .filter(d -> d.getUser()==userRepository.findById(id).get())
+                .filter(d -> d.getUserId()==userRepository.findById(id).get().getId())
                 .toList();
     }
 
@@ -192,7 +191,7 @@ public class DemandeServiceImpl implements DemandeService {
     public List<SalleDTO> listeSalleDispo(DemandeDTO demande){
         List<SalleDTO> listeSalleConcordante =salleRepository.findAll().stream()
                 .map(salleMapper::toDTO)
-                .filter(salle -> salle.getCapacite()==demande.getSalle().getCapacite())
+                .filter(salle -> salle.getCapacite()==salleRepository.findById(demande.getSalleId()).get().getCapacite())
                 .toList();
 
         //retire les salles ou pas materiel nécessaire
@@ -209,7 +208,7 @@ public class DemandeServiceImpl implements DemandeService {
         List<Demande> demandeDuJour = demandeRepository.findAll().stream()
                 .filter(d -> d.getCreneau().getYear()==demande.getCreneau().getYear())
                 .filter(d -> d.getCreneau().getDayOfYear()==demande.getCreneau().getDayOfYear())
-                .filter(d -> d.getSalle().getCapacite()==demande.getSalle().getCapacite())
+                .filter(d -> d.getSalle().getCapacite()==salleRepository.findById(demande.getSalleId()).get().getCapacite())
                 .filter(d -> d.getAdmin()!=null)
                 .toList();
 

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Service
 public class DemandeMapper {
 
-    MaterielMapper materielMapper;
+    private MaterielMapper materielMapper;
 
     public DemandeMapper(MaterielMapper materielMapper) {
         this.materielMapper = materielMapper;
@@ -22,13 +22,17 @@ public class DemandeMapper {
         if(entity == null)
             return null;
 
+        Long adminId=null;
+        if(entity.getAdmin()!=null)
+            adminId=entity.getAdmin().getId();
+
         return DemandeDTO.builder()
                 .id(entity.getId())
                 .creneau(entity.getCreneau())
                 .minutes(entity.getMinutes())
-                .salle(entity.getSalle())
-                .admin(entity.getAdmin())
-                .user(entity.getUser())
+                .salleId(entity.getSalle().getId())
+                .adminId(adminId)
+                .userId(entity.getUser().getId())
                 .raisonDemande(entity.getRaisonDemande())
                 .raisonRefus(entity.getRaisonRefus())
                 .materiels(
