@@ -39,40 +39,34 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthDTO register(RegisterForm form) {
+    public void register(RegisterForm form) {
         if( userRepository.existsByEmail(form.getEmail()))
             throw new EmailAlreadyTakenException();
 
         User user = userMapper.toEntity(form);
+
+        String login = form.getNom().substring(0,3).concat(form.getPrenom().substring(0,3));
+
+        user.setActif(true);
+        user.setLogin(login);
         user.setMotDePasse( passwordEncoder.encode(form.getMotDePasse()) );
         user = userRepository.save( user );
-
-        String token = jwtProvider.generateToken(user.getLogin(), List.copyOf(user.getRoles()));
-
-        return AuthDTO.builder()
-                .token(token)
-                .login(user.getLogin())
-                .roles(user.getRoles())
-                .build();
     }
 
     @Override
-    public AuthDTO register(StudentRegisterForm form) {
+    public void register(StudentRegisterForm form) {
         if( userRepository.existsByEmail(form.getEmail()))
             throw new EmailAlreadyTakenException();
 
         User user = userMapper.toEntity(form);
+
+        String login = form.getNom().substring(0,3).concat(form.getPrenom().substring(0,3));
+
+        user.setLogin(login);
         user.setMotDePasse( passwordEncoder.encode(form.getMotDePasse()) );
         user.getRoles().add(Role.ETUDIANT);
         user = userRepository.save( user );
 
-        String token = jwtProvider.generateToken(user.getLogin(), List.copyOf(user.getRoles()));
-
-        return AuthDTO.builder()
-                .token(token)
-                .login(user.getLogin())
-                .roles(user.getRoles())
-                .build();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package be.technobel.ylorth.reservastock_rest.service;
 
+import be.technobel.ylorth.reservastock_rest.model.dto.AuthDTO;
 import be.technobel.ylorth.reservastock_rest.model.dto.DemandeDTO;
 import be.technobel.ylorth.reservastock_rest.model.dto.SalleDTO;
 import be.technobel.ylorth.reservastock_rest.model.entity.Demande;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface DemandeService {
     List<DemandeDTO> getAllUnconfirm();
-    List<DemandeDTO> getAllByUser(Long id);
+    List<DemandeDTO> getAllByUser(String username);
     DemandeDTO getOne(Long id);
     void insert(DemandeForm form);
     void update(DemandeForm form, Long id);

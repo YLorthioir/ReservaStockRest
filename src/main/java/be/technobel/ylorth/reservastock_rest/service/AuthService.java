@@ -10,8 +10,8 @@ import be.technobel.ylorth.reservastock_rest.model.form.StudentRegisterForm;
 import java.util.List;
 
 public interface AuthService {
-    AuthDTO register(RegisterForm form);
-    AuthDTO register(StudentRegisterForm form);
+    void register(RegisterForm form);
+    void register(StudentRegisterForm form);
     boolean checkEmailNotTaken(String email);
     AuthDTO login(LoginForm form);
     Long findByLogin(String login);

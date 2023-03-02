@@ -1,6 +1,5 @@
 package be.technobel.ylorth.reservastock_rest.model.form;
 
-import be.technobel.ylorth.reservastock_rest.model.entity.Demande;
 import be.technobel.ylorth.reservastock_rest.validation.constraints.ConfirmPassword;
 import be.technobel.ylorth.reservastock_rest.validation.constraints.EmailNotTaken;
 import jakarta.validation.constraints.Email;
@@ -8,11 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Data
-@ConfirmPassword
 public class StudentRegisterForm {
     @NotNull
     @Size(min = 4, max = 40)
@@ -23,9 +19,9 @@ public class StudentRegisterForm {
     @NotNull
     @Size(min = 4, max = 40)
     private String motDePasse;
-    @NotNull
+/*    @NotNull
     @Size(min = 4, max = 40)
-    private String confirmMotDePasse;
+    private String confirmMotDePasse;*/
     @NotNull
     @Email
     @EmailNotTaken
@@ -36,6 +32,6 @@ public class StudentRegisterForm {
     @NotNull
     @Size(min = 4, max = 100)
     private String adresse;
-    private Set<Demande> demandes = new LinkedHashSet<>();
+
 
 }

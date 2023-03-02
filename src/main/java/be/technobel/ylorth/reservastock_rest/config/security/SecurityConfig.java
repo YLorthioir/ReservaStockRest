@@ -50,7 +50,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.DELETE, "/materiel/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/materiel/**").authenticated()
 
-                    .requestMatchers("/demande/all").hasRole("ADMIN")
+                    .requestMatchers("/demande/allUnconfirm").hasRole("ADMIN")
                     .requestMatchers("/demande/**").authenticated()
                     .requestMatchers("/demande/{id:[0-9]+}/confirm").hasRole("ADMIN")
 

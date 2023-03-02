@@ -37,7 +37,6 @@ public class RegisterForm {
     @NotNull
     @Size(min = 4, max = 100)
     private String adresse;
-    private Set<Role> roles;
-    private Set<Demande> demandes = new LinkedHashSet<>();
+
 
 }

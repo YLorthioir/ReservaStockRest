@@ -1,6 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.service.impl;
 
 import be.technobel.ylorth.reservastock_rest.exception.NotFoundException;
+import be.technobel.ylorth.reservastock_rest.model.dto.AuthDTO;
 import be.technobel.ylorth.reservastock_rest.model.dto.DemandeDTO;
 import be.technobel.ylorth.reservastock_rest.model.dto.MaterielDTO;
 import be.technobel.ylorth.reservastock_rest.model.dto.SalleDTO;
@@ -52,10 +53,10 @@ public class DemandeServiceImpl implements DemandeService {
                 .collect(Collectors.toList());
     }
     @Override
-    public List<DemandeDTO> getAllByUser(Long id){
+    public List<DemandeDTO> getAllByUser(String username){
         return demandeRepository.findAll().stream()
                 .map(demandeMapper::toDTO)
-                .filter(d -> d.getUserId()==userRepository.findById(id).get().getId())
+                .filter(d -> d.getUserId()==userRepository.findByLogin(username).get().getId())
                 .toList();
     }
 
@@ -126,9 +127,11 @@ public class DemandeServiceImpl implements DemandeService {
     public Demande verification(Demande entity){
 
         //Liste de salles correspondantes
-        Set<Salle> salleConcordantes=salleRepository.findAll().stream()
+/*        Set<Salle> salleConcordantes=salleRepository.findAll().stream()
                 .filter(salle ->salle.getCapacite()==entity.getSalle().getCapacite())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet());*/
+
+        Set<Salle> salleConcordantes=salleRepository.findAllByCapacite(entity.getSalle().getCapacite());
 
         //prof ou non
         if(entity.getUser().getRoles().contains(Role.ETUDIANT)){
@@ -145,11 +148,13 @@ public class DemandeServiceImpl implements DemandeService {
             }
         }
 
+        //Si demande en traitement (donc a un id), on mets la salle choisie
         if(entity.getId()>0) {
             salleConcordantes.removeAll(salleConcordantes);
             salleConcordantes.add(entity.getSalle());
         }
 
+        //si aucun salles ne correspond on signale
         if(salleConcordantes.size()==0)
             entity.setRaisonRefus("Pas de salles contenant le materiel nécessaire");
 
@@ -190,8 +195,8 @@ public class DemandeServiceImpl implements DemandeService {
 
     public List<SalleDTO> listeSalleDispo(DemandeDTO demande){
         List<SalleDTO> listeSalleConcordante =salleRepository.findAll().stream()
-                .map(salleMapper::toDTO)
                 .filter(salle -> salle.getCapacite()==salleRepository.findById(demande.getSalleId()).get().getCapacite())
+                .map(salleMapper::toDTO)
                 .toList();
 
         //retire les salles ou pas materiel nécessaire

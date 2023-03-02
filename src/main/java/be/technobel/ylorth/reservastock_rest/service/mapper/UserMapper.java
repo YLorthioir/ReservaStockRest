@@ -50,7 +50,6 @@ public class UserMapper {
         user.setMotDePasse(form.getMotDePasse());
         user.setEmail(form.getEmail());
         user.setTelephone(form.getTelephone());
-        user.setRoles(form.getRoles());
 
         return user;
     }

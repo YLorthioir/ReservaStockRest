@@ -123,7 +123,7 @@ public class DataInit implements InitializingBean {
 
         User user3 = new User();
         Set<Role> setRole3 = new HashSet<>();
-        setRole2.add(Role.ADMIN);
+        setRole3.add(Role.ADMIN);
         user3.setNom("Admin");
         user3.setPrenom("Pierre");
         user3.setRoles(setRole3);

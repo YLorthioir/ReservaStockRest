@@ -5,7 +5,9 @@ import be.technobel.ylorth.reservastock_rest.model.form.ConfirmForm;
 import be.technobel.ylorth.reservastock_rest.model.form.DemandeForm;
 import be.technobel.ylorth.reservastock_rest.service.AuthService;
 import be.technobel.ylorth.reservastock_rest.service.DemandeService;
+import be.technobel.ylorth.reservastock_rest.utils.JwtProvider;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,41 +18,40 @@ public class DemandeController {
     private final DemandeService demandeService;
     private final AuthService authService;
 
-
     public DemandeController(DemandeService demandeService, AuthService authService) {
         this.demandeService = demandeService;
         this.authService = authService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/allUnconfirm")
     public List<DemandeDTO> getAllUnconfirm(){
         return demandeService.getAllUnconfirm();
     }
 
     @GetMapping("/{id:[0-9]+}")
-    public DemandeDTO getOne(@PathVariable long id){
-        return demandeService.getOne(id);
+    public DemandeDTO getOne(@PathVariable long idDemande){
+        return demandeService.getOne(idDemande);
     }
 
-    @GetMapping("/all/{id:[0-9]+}")
-    public List<DemandeDTO> getAllByUser(@PathVariable long id){
-        return demandeService.getAllByUser(id);
+    @GetMapping("/all")
+    public List<DemandeDTO> getAllByUser(Authentication authentication){
+        return demandeService.getAllByUser(authentication.getPrincipal().toString());
     }
 
-    @PostMapping("/{id:[0-9]+}/add")
-    public void addDemande(@PathVariable Long userId, @RequestBody @Valid DemandeForm form){
-        form.setUser(userId);
+    @PostMapping("/add")
+    public void addDemande(@RequestBody @Valid DemandeForm form, Authentication authentication){
+        form.setUser(authService.findByLogin(authentication.getPrincipal().toString()));
         demandeService.insert(form);
     }
 
     @PostMapping("/{id:[0-9]+}/confirm")
-    public void processConfirmForm(@PathVariable Long demandeId,@RequestBody @Valid ConfirmForm form, @RequestHeader String loginAdmin){
-        form.setAdmin(authService.findByLogin(loginAdmin));
-        demandeService.confirm(form, demandeId);
+    public void processConfirmForm(@PathVariable Long idDemande,@RequestBody @Valid ConfirmForm form, Authentication authentication){
+        form.setAdmin(authService.findByLogin(authentication.getPrincipal().toString()));
+        demandeService.confirm(form, idDemande);
     }
 
     @DeleteMapping("/{id:[0-9]+}")
-    public void delete(@PathVariable long id){
-        demandeService.delete(id);
+    public void delete(@PathVariable long idDemande){
+        demandeService.delete(idDemande);
     }
 }
