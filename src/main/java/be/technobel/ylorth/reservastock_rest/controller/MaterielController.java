@@ -24,8 +24,8 @@ public class MaterielController {
     }
 
     @GetMapping("/{id:[0-9]+}")
-    public MaterielDTO getOne( @PathVariable long idMateriel){
-        return materielService.getOne(idMateriel);
+    public MaterielDTO getOne( @PathVariable long id){
+        return materielService.getOne(id);
     }
 
     @PostMapping("/add")
@@ -35,8 +35,8 @@ public class MaterielController {
     }
 
     @DeleteMapping("/{id:[0-9]+}")
-    public void delete(@PathVariable long idMateriel){
-        materielService.delete(idMateriel);
+    public void delete(@PathVariable long id){
+        materielService.delete(id);
     }
 
 }

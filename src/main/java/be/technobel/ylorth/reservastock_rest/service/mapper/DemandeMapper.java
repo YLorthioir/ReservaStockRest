@@ -56,18 +56,4 @@ public class DemandeMapper {
         return demande;
     }
 
-    public Demande confirmToEntity(ConfirmForm form){
-
-        if(form == null)
-            return null;
-
-        Demande demande = new Demande();
-
-        demande.setCreneau(form.getCreneau());
-        demande.setRaisonDemande(form.getRaisonDemande());
-        demande.setMinutes(form.getMinutes());
-        demande.setRaisonRefus(form.getRaisonRefus());
-
-        return demande;
-    }
 }

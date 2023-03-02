@@ -5,7 +5,6 @@ import be.technobel.ylorth.reservastock_rest.model.form.ConfirmForm;
 import be.technobel.ylorth.reservastock_rest.model.form.DemandeForm;
 import be.technobel.ylorth.reservastock_rest.service.AuthService;
 import be.technobel.ylorth.reservastock_rest.service.DemandeService;
-import be.technobel.ylorth.reservastock_rest.utils.JwtProvider;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +28,8 @@ public class DemandeController {
     }
 
     @GetMapping("/{id:[0-9]+}")
-    public DemandeDTO getOne(@PathVariable long idDemande){
-        return demandeService.getOne(idDemande);
+    public DemandeDTO getOne(@PathVariable long id){
+        return demandeService.getOne(id);
     }
 
     @GetMapping("/all")
@@ -44,14 +43,19 @@ public class DemandeController {
         demandeService.insert(form);
     }
 
-    @PostMapping("/{id:[0-9]+}/confirm")
-    public void processConfirmForm(@PathVariable Long idDemande,@RequestBody @Valid ConfirmForm form, Authentication authentication){
-        form.setAdmin(authService.findByLogin(authentication.getPrincipal().toString()));
-        demandeService.confirm(form, idDemande);
+    @PatchMapping("/{id:[0-9]+}/confirm")
+    public void processConfirmForm(@PathVariable Long id,@RequestBody @Valid ConfirmForm form, Authentication authentication){
+        if(form.isValide()) {
+            form.setAdmin(authService.findByLogin(authentication.getPrincipal().toString()));
+            form.setRaisonRefus(null);
+        }else{
+            form.setAdmin(null);
+        }
+        demandeService.confirm(form, id);
     }
 
     @DeleteMapping("/{id:[0-9]+}")
-    public void delete(@PathVariable long idDemande){
-        demandeService.delete(idDemande);
+    public void delete(@PathVariable long id){
+        demandeService.delete(id);
     }
 }
