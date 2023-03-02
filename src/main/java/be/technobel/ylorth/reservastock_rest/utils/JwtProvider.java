@@ -8,7 +8,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.List;
 
 @Component
 public class JwtProvider {
@@ -25,18 +25,19 @@ public class JwtProvider {
     private static final long EXPIRES_AT = 86_400_000;
     private static final String AUTH_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
+
     private final UserDetailsService userDetailsService;
 
     public JwtProvider(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
-    public String generateToken(String username, Role role){
+    public String generateToken(String username, List<Role> roles){
 
         return TOKEN_PREFIX + JWT.create()
                 .withExpiresAt( Instant.now().plusMillis(EXPIRES_AT) )
                 .withSubject(username)
-                .withClaim("role", role.toString())
+                .withClaim("roles", roles.stream().map(Enum::toString).toList())
                 .sign( Algorithm.HMAC512(JWT_SECRET) );
 
     }
@@ -59,7 +60,7 @@ public class JwtProvider {
             DecodedJWT jwt = JWT.require( Algorithm.HMAC512(JWT_SECRET) )
                     .acceptExpiresAt( EXPIRES_AT )
                     .withClaimPresence("sub")
-                    .withClaimPresence("role")
+                    .withClaimPresence("roles")
                     .build()
                     .verify( token );
 
@@ -68,9 +69,12 @@ public class JwtProvider {
             User user = (User) userDetailsService.loadUserByUsername(username);
             if( !user.isEnabled() )
                 return false;
-            else
-                return true;
 
+            // (4, Les roles ne sont plus bon) Verifier les roles n'est pas conventionnel
+            List<Role> tokenRoles = jwt.getClaim("roles")
+                    .asList(Role.class);
+
+            return user.getRoles().containsAll( tokenRoles );
         }
         catch (JWTVerificationException | UsernameNotFoundException ex ){
             return false;

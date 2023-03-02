@@ -131,7 +131,7 @@ public class DemandeServiceImpl implements DemandeService {
                 .collect(Collectors.toSet());
 
         //prof ou non
-        if(entity.getUser().getRole()==Role.ETUDIANT){
+        if(entity.getUser().getRoles().contains(Role.ETUDIANT)){
             salleConcordantes.stream()
                     .filter(salle -> !salle.isPourPersonnel())
                     .collect(Collectors.toSet());
@@ -173,7 +173,7 @@ public class DemandeServiceImpl implements DemandeService {
 
         if(salleNonDispo.size()==salleConcordantes.size()){
             for (Demande demande : demandeDeSalleConcordante) {
-                if(entity.getUser().getRole() == Role.PROFESSEUR && demande.getUser().getRole() == Role.ETUDIANT) {
+                if(entity.getUser().getRoles().contains(Role.PROFESSEUR) && demande.getUser().getRoles().contains(Role.ETUDIANT)) {
                     demande.setAdmin(null);
                     demande.setRaisonRefus("Demande annulée");
                     demandeRepository.save(demande);

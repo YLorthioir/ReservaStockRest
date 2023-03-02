@@ -4,6 +4,8 @@ import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Builder
 public class UserDTO {
@@ -14,5 +16,5 @@ public class UserDTO {
     private String email;
     private String telephone;
     private String adresse;
-    private Role role;
+    private Set<Role> roles;
 }

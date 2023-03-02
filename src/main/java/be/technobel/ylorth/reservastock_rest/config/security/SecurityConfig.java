@@ -44,17 +44,21 @@ public class SecurityConfig {
 
                     .requestMatchers(HttpMethod.POST, "/salle/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PUT, "/salle/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/salle/**").authenticated()
 
                     .requestMatchers(HttpMethod.POST, "/materiel/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/materiel/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/materiel/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/materiel/**").authenticated()
 
                     .requestMatchers("/demande/all").hasRole("ADMIN")
-                    .requestMatchers("/demande/{id:[0-9]+}/confirm").hasRole("ADMIN")
                     .requestMatchers("/demande/**").authenticated()
+                    .requestMatchers("/demande/{id:[0-9]+}/confirm").hasRole("ADMIN")
 
 
-                    .anyRequest().authenticated()
+                    .requestMatchers( request -> request.getRequestURI().length() > 500 ).denyAll()
+
+                    // Si pas permitAll, swagger ne fonctionne pas
+                    .anyRequest().permitAll()
 
         );
 

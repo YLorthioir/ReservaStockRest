@@ -12,6 +12,6 @@ public class AuthDTO {
 
     private String token;
     private String login;
-    private Role role;
+    private Set<Role> roles;
 
 }

@@ -44,8 +44,8 @@ public class DemandeController {
     }
 
     @PostMapping("/{id:[0-9]+}/confirm")
-    public void processConfirmForm(@PathVariable Long demandeId,@RequestBody @Valid ConfirmForm form, @RequestHeader String login){
-        form.setAdmin(authService.findByLogin(login));
+    public void processConfirmForm(@PathVariable Long demandeId,@RequestBody @Valid ConfirmForm form, @RequestHeader String loginAdmin){
+        form.setAdmin(authService.findByLogin(loginAdmin));
         demandeService.confirm(form, demandeId);
     }
 

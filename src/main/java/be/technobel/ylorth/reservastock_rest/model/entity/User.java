@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter @Setter
@@ -33,9 +35,9 @@ public class User implements UserDetails {
     private String telephone;
     @Column(nullable = false)
     private String adresse;
-    @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Role> roles = new LinkedHashSet<>();
     @Column(nullable = false)
     private boolean actif;
     @OneToMany(mappedBy = "user", orphanRemoval = true)
@@ -43,7 +45,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return roles.stream()
+                .map( (role) -> new SimpleGrantedAuthority("ROLE_"+role ))
+                .collect(Collectors.toSet());
     }
 
     @Override

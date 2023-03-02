@@ -19,15 +19,6 @@ public class UserMapper {
         this.demandeMapper = demandeMapper;
     }
 
-    public AuthDTO toDTO(User entity){
-        if(entity == null)
-            return null;
-
-        return AuthDTO.builder()
-                .login(entity.getLogin())
-                .role(entity.getRole())
-                .build();
-    }
 
     public UserDTO toUserDTO(User entity){
 
@@ -39,7 +30,7 @@ public class UserMapper {
                 .nom(entity.getNom())
                 .prenom(entity.getPrenom())
                 .login(entity.getLogin())
-                .role(entity.getRole())
+                .roles(entity.getRoles())
                 .adresse(entity.getAdresse())
                 .email(entity.getEmail())
                 .telephone(entity.getTelephone())
@@ -59,7 +50,7 @@ public class UserMapper {
         user.setMotDePasse(form.getMotDePasse());
         user.setEmail(form.getEmail());
         user.setTelephone(form.getTelephone());
-        user.setRole(form.getRole());
+        user.setRoles(form.getRoles());
 
         return user;
     }
@@ -77,7 +68,7 @@ public class UserMapper {
         user.setMotDePasse(form.getMotDePasse());
         user.setEmail(form.getEmail());
         user.setTelephone(form.getTelephone());
-        user.setRole(Role.ETUDIANT);
+        user.getRoles().add(Role.ETUDIANT);
 
         return user;
     }

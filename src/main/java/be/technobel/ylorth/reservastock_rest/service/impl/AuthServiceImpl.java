@@ -47,12 +47,12 @@ public class AuthServiceImpl implements AuthService {
         user.setMotDePasse( passwordEncoder.encode(form.getMotDePasse()) );
         user = userRepository.save( user );
 
-        String token = jwtProvider.generateToken(user.getLogin(), user.getRole());
+        String token = jwtProvider.generateToken(user.getLogin(), List.copyOf(user.getRoles()));
 
         return AuthDTO.builder()
                 .token(token)
                 .login(user.getLogin())
-                .role(user.getRole())
+                .roles(user.getRoles())
                 .build();
     }
 
@@ -63,14 +63,15 @@ public class AuthServiceImpl implements AuthService {
 
         User user = userMapper.toEntity(form);
         user.setMotDePasse( passwordEncoder.encode(form.getMotDePasse()) );
+        user.getRoles().add(Role.ETUDIANT);
         user = userRepository.save( user );
 
-        String token = jwtProvider.generateToken(user.getLogin(), user.getRole());
+        String token = jwtProvider.generateToken(user.getLogin(), List.copyOf(user.getRoles()));
 
         return AuthDTO.builder()
                 .token(token)
                 .login(user.getLogin())
-                .role(Role.ETUDIANT)
+                .roles(user.getRoles())
                 .build();
     }
 
@@ -86,12 +87,12 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByLogin(form.getLogin() )
                 .orElseThrow();
 
-        String token = jwtProvider.generateToken(user.getUsername(), user.getRole() );
+        String token = jwtProvider.generateToken(user.getUsername(), List.copyOf(user.getRoles()) );
 
         return AuthDTO.builder()
                 .token(token)
                 .login(user.getLogin())
-                .role(user.getRole())
+                .roles(user.getRoles())
                 .build();
     }
 

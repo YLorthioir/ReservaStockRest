@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -90,9 +91,11 @@ public class DataInit implements InitializingBean {
         salleRepository.save(salle3);
 
         User user1 = new User();
+        Set<Role> setRole1 = new HashSet<>();
+        setRole1.add(Role.ETUDIANT);
         user1.setNom("Dupont");
         user1.setPrenom("Jean");
-        user1.setRole(Role.ETUDIANT);
+        user1.setRoles(setRole1);
         user1.setTelephone("0123/2344.233");
         user1.setAdresse("rue du blabla 1");
         user1.setLogin("login");
@@ -103,9 +106,11 @@ public class DataInit implements InitializingBean {
         user1 = userRepository.save(user1);
 
         User user2 = new User();
+        Set<Role> setRole2 = new HashSet<>();
+        setRole2.add(Role.PROFESSEUR);
         user2.setNom("Marc");
         user2.setPrenom("Pierre");
-        user2.setRole(Role.PROFESSEUR);
+        user2.setRoles(setRole2);
         user2.setTelephone("0123/234.233");
         user2.setAdresse("rue du blabla 2");
         user2.setLogin("login2");
@@ -117,9 +122,11 @@ public class DataInit implements InitializingBean {
         user2 = userRepository.save(user2);
 
         User user3 = new User();
+        Set<Role> setRole3 = new HashSet<>();
+        setRole2.add(Role.ADMIN);
         user3.setNom("Admin");
         user3.setPrenom("Pierre");
-        user3.setRole(Role.ADMIN);
+        user3.setRoles(setRole3);
         user3.setTelephone("0123/2333333");
         user3.setAdresse("rue duel'admin 2");
         user3.setLogin("admin");
