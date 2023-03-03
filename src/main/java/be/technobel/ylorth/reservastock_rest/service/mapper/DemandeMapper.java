@@ -4,6 +4,7 @@ import be.technobel.ylorth.reservastock_rest.model.dto.DemandeDTO;
 import be.technobel.ylorth.reservastock_rest.model.entity.Demande;
 import be.technobel.ylorth.reservastock_rest.model.form.ConfirmForm;
 import be.technobel.ylorth.reservastock_rest.model.form.DemandeForm;
+import be.technobel.ylorth.reservastock_rest.repository.MaterielRepository;
 import be.technobel.ylorth.reservastock_rest.repository.SalleRepository;
 import be.technobel.ylorth.reservastock_rest.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -16,13 +17,16 @@ public class DemandeMapper {
     private MaterielMapper materielMapper;
     private final SalleRepository salleRepository;
     private final UserRepository userRepository;
+    private final MaterielRepository materielRepository;
 
     public DemandeMapper(MaterielMapper materielMapper,
                          SalleRepository salleRepository,
-                         UserRepository userRepository) {
+                         UserRepository userRepository,
+                         MaterielRepository materielRepository) {
         this.materielMapper = materielMapper;
         this.salleRepository = salleRepository;
         this.userRepository = userRepository;
+        this.materielRepository = materielRepository;
     }
 
     public DemandeDTO toDTO(Demande entity){
@@ -60,6 +64,9 @@ public class DemandeMapper {
         demande.setCreneau(form.getCreneau());
         demande.setRaisonDemande(form.getRaisonDemande());
         demande.setMinutes(form.getMinutes());
+        demande.setMateriels(form.getMateriels().stream()
+                .map(l -> materielRepository.findById(l).get())
+                .collect(Collectors.toSet()));
 
         return demande;
     }

@@ -2,9 +2,7 @@ package be.technobel.ylorth.reservastock_rest.service.impl;
 
 import be.technobel.ylorth.reservastock_rest.exception.NotFoundException;
 import be.technobel.ylorth.reservastock_rest.model.dto.DemandeDTO;
-import be.technobel.ylorth.reservastock_rest.model.dto.SalleDTO;
 import be.technobel.ylorth.reservastock_rest.model.entity.Demande;
-import be.technobel.ylorth.reservastock_rest.model.entity.Materiel;
 import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import be.technobel.ylorth.reservastock_rest.model.entity.Salle;
 import be.technobel.ylorth.reservastock_rest.model.form.ConfirmForm;
@@ -144,9 +142,9 @@ public class DemandeServiceImpl implements DemandeService {
 
         //liste des demandes validées comprenant les salles correspondantes au moment de la demande
         List<Demande> demandeDeSalleConcordanteDejaValide = new ArrayList<>();
+
         //Set de salles non dispo à ce moment
         Set<Salle> salleNonDispo = new HashSet<>();
-
 
         for (Salle salle:salleConcordantes) {
 
@@ -154,18 +152,17 @@ public class DemandeServiceImpl implements DemandeService {
                     .filter(demande -> salle == demande.getSalle() && demande.getAdmin()!= null && demande.getRaisonRefus()==null)
                     .toList();
 
-            for (Demande demande:listeDemande) {
+            listeDemande.forEach(demande -> {
                 if(!(entity.getCreneau().plusMinutes(entity.getMinutes()).isBefore(demande.getCreneau()) || entity.getCreneau().isAfter(demande.getCreneau().plusMinutes(demande.getMinutes())))) {
                     salleNonDispo.add(salle);
                     demandeDeSalleConcordanteDejaValide.add(demande);
                 }
-            }
+            });
         }
 
         //si salleNonDispo < salles concordantes: il y a une salle qui correspond à la demande dispo.
         //si non, on regarde si c'est un prof qui a fait la demande
         //si aucun match, on stipule qu'il n'y a pas de salles dispo
-        boolean insertOK = false;
 
         if(salleNonDispo.size()==salleConcordantes.size() && (entity.getUser().getRoles().contains(Role.PROFESSEUR) || entity.getUser().getRoles().contains(Role.ADMIN))){
             for (Salle salle : salleNonDispo) {
@@ -202,22 +199,15 @@ public class DemandeServiceImpl implements DemandeService {
         return entity;
     }
     public Set<Salle> sallesCorrespondante(Demande entity){
-        //Salles ayant la même capacité
 
+        //Salles ayant la même capacité
         Set<Salle> salleConcordantes= salleRepository.findAllByCapacite(entity.getSalle().getCapacite());
 
-        //salles selon si demande d'un prof ou non
-        if(entity.getUser().getRoles().contains(Role.ETUDIANT)){
-            salleConcordantes.stream()
-                    .filter(salle -> !salle.isPourPersonnel())
-                    .collect(Collectors.toSet());
-        }
-
         //retire les salles où pas materiel nécessaire
-        salleConcordantes.stream()
-                .filter(salle -> salle.getContient().containsAll(entity.getMateriels()))
-                .collect(Collectors.toList());
+        return salleConcordantes.stream()
+                .filter(s -> s.getContient().containsAll(entity.getMateriels()))
+                .filter(s -> !(entity.getUser().getRoles().contains(Role.ETUDIANT)&& s.isPourPersonnel()))
+                .collect(Collectors.toSet());
 
-        return salleConcordantes;
     }
 }
