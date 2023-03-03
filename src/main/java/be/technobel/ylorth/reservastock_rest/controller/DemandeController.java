@@ -55,7 +55,7 @@ public class DemandeController {
     }
 
     @DeleteMapping("/{id:[0-9]+}")
-    public void delete(@PathVariable long id){
-        demandeService.delete(id);
+    public void delete(@PathVariable long id, Authentication authentication){
+        demandeService.delete(id, authentication);
     }
 }

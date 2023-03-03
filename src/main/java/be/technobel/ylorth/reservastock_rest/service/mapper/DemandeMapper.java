@@ -4,6 +4,8 @@ import be.technobel.ylorth.reservastock_rest.model.dto.DemandeDTO;
 import be.technobel.ylorth.reservastock_rest.model.entity.Demande;
 import be.technobel.ylorth.reservastock_rest.model.form.ConfirmForm;
 import be.technobel.ylorth.reservastock_rest.model.form.DemandeForm;
+import be.technobel.ylorth.reservastock_rest.repository.SalleRepository;
+import be.technobel.ylorth.reservastock_rest.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -12,9 +14,15 @@ import java.util.stream.Collectors;
 public class DemandeMapper {
 
     private MaterielMapper materielMapper;
+    private final SalleRepository salleRepository;
+    private final UserRepository userRepository;
 
-    public DemandeMapper(MaterielMapper materielMapper) {
+    public DemandeMapper(MaterielMapper materielMapper,
+                         SalleRepository salleRepository,
+                         UserRepository userRepository) {
         this.materielMapper = materielMapper;
+        this.salleRepository = salleRepository;
+        this.userRepository = userRepository;
     }
 
     public DemandeDTO toDTO(Demande entity){
@@ -56,4 +64,26 @@ public class DemandeMapper {
         return demande;
     }
 
+    public Demande toEntity(DemandeDTO demandeDTO){
+
+        if(demandeDTO == null)
+            return null;
+
+        Demande entity = new Demande();
+
+        entity.setId(demandeDTO.getId());
+        entity.setCreneau(demandeDTO.getCreneau());
+        entity.setMinutes(demandeDTO.getMinutes());
+        entity.setSalle(salleRepository.findById(demandeDTO.getSalleId()).get());
+        entity.setAdmin(userRepository.findById(demandeDTO.getAdminId()).get());
+        entity.setUser(userRepository.findById(demandeDTO.getUserId()).get());
+        entity.setRaisonDemande(demandeDTO.getRaisonDemande());
+        entity.setRaisonRefus(demandeDTO.getRaisonRefus());
+        entity.setMateriels(demandeDTO.getMateriels().stream()
+                .map(dto -> materielMapper.toEntity(dto))
+                .collect(Collectors.toSet())
+        );
+
+        return entity;
+    }
 }

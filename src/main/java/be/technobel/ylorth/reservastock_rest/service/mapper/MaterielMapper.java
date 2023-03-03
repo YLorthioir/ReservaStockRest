@@ -21,4 +21,16 @@ public class MaterielMapper {
                 .build();
     }
 
+    public Materiel toEntity(MaterielDTO materielDTO){
+
+        if(materielDTO == null)
+            return null;
+
+        Materiel entity = new Materiel();
+        entity.setId(materielDTO.getId());
+        entity.setNom(materielDTO.getNom());
+
+        return entity;
+    }
+
 }

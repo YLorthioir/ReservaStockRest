@@ -7,6 +7,7 @@ import be.technobel.ylorth.reservastock_rest.model.entity.Demande;
 import be.technobel.ylorth.reservastock_rest.model.entity.Salle;
 import be.technobel.ylorth.reservastock_rest.model.form.ConfirmForm;
 import be.technobel.ylorth.reservastock_rest.model.form.DemandeForm;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Set;
@@ -18,7 +19,7 @@ public interface DemandeService {
     void insert(DemandeForm form);
     void update(DemandeForm form, Long id);
     void confirm(ConfirmForm form, Long id);
-    void delete(Long id);
+    void delete(Long id, Authentication authentication);
     Demande verification(Demande entity);
     Set<Salle> sallesCorrespondante(Demande entity);
 }

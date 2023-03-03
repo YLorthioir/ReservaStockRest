@@ -50,9 +50,10 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.DELETE, "/materiel/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/materiel/**").authenticated()
 
-                    .requestMatchers("/demande/allUnconfirm").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET,"/demande/allUnconfirm").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/demande/{id:[0-9]+}").authenticated()
+                    .requestMatchers(HttpMethod.PATCH,"/demande/{id:[0-9]+}/confirm").hasRole("ADMIN")
                     .requestMatchers("/demande/**").authenticated()
-                    .requestMatchers("/demande/{id:[0-9]+}/confirm").hasRole("ADMIN")
 
 
                     .requestMatchers( request -> request.getRequestURI().length() > 500 ).denyAll()

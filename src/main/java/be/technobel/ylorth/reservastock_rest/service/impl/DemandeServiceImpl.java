@@ -2,6 +2,7 @@ package be.technobel.ylorth.reservastock_rest.service.impl;
 
 import be.technobel.ylorth.reservastock_rest.exception.NotFoundException;
 import be.technobel.ylorth.reservastock_rest.model.dto.DemandeDTO;
+import be.technobel.ylorth.reservastock_rest.model.dto.SalleDTO;
 import be.technobel.ylorth.reservastock_rest.model.entity.Demande;
 import be.technobel.ylorth.reservastock_rest.model.entity.Materiel;
 import be.technobel.ylorth.reservastock_rest.model.entity.Role;
@@ -15,6 +16,8 @@ import be.technobel.ylorth.reservastock_rest.repository.UserRepository;
 import be.technobel.ylorth.reservastock_rest.service.DemandeService;
 import be.technobel.ylorth.reservastock_rest.service.mapper.DemandeMapper;
 import be.technobel.ylorth.reservastock_rest.service.mapper.SalleMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -84,6 +87,7 @@ public class DemandeServiceImpl implements DemandeService {
     public void confirm(ConfirmForm form, Long id) {
         Demande entity = demandeRepository.findById(id).get();
 
+        entity.setSalle(salleRepository.findById(form.getSalle()).get());
         entity = verification(entity);
 
         if(form.isValide() && entity.getRaisonRefus()==null)
@@ -97,11 +101,12 @@ public class DemandeServiceImpl implements DemandeService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id, Authentication authentication) {
         if( !demandeRepository.existsById(id) )
             throw new NotFoundException("Demande not found");
 
-        demandeRepository.deleteById(id);
+        if(demandeRepository.findById(id).get().getUser().getLogin().equals(authentication.getPrincipal().toString()) || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+            demandeRepository.deleteById(id);
     }
 
     @Override
@@ -126,6 +131,12 @@ public class DemandeServiceImpl implements DemandeService {
         //Liste de salles correspondantes
 
         Set<Salle> salleConcordantes= sallesCorrespondante(entity);
+
+        //Si demande en traitement (donc a un id), on met la salle choisie
+        if(entity.getId()>0) {
+            salleConcordantes.removeAll(salleConcordantes);
+            salleConcordantes.add(entity.getSalle());
+        }
 
         //si aucun salles ne correspond on signale
         if(salleConcordantes.size()==0)
@@ -156,7 +167,7 @@ public class DemandeServiceImpl implements DemandeService {
         //si aucun match, on stipule qu'il n'y a pas de salles dispo
         boolean insertOK = false;
 
-        if(salleNonDispo.size()==salleConcordantes.size() && entity.getUser().getRoles().contains(Role.PROFESSEUR)){
+        if(salleNonDispo.size()==salleConcordantes.size() && (entity.getUser().getRoles().contains(Role.PROFESSEUR) || entity.getUser().getRoles().contains(Role.ADMIN))){
             for (Salle salle : salleNonDispo) {
 
                 //Liste des demande qui on la même salle
@@ -165,7 +176,7 @@ public class DemandeServiceImpl implements DemandeService {
                         .toList();
 
                 //recherche des demandes faites par un prof
-                List<Demande>  demandeProf= demandeDeSalleConcordanteDejaValide.stream()
+                List<Demande>  demandeProf= demandeValideeParSalle.stream()
                         .filter(demande -> demande.getUser().getRoles().contains(Role.PROFESSEUR))
                         .toList();
 
@@ -181,7 +192,7 @@ public class DemandeServiceImpl implements DemandeService {
                                 demandeRepository.save(d);
                                 entity.setRaisonRefus(null);
                             });
-                    break;
+                    return entity;
                 }
             }
         } else if (salleNonDispo.size()==salleConcordantes.size()) {
@@ -202,19 +213,10 @@ public class DemandeServiceImpl implements DemandeService {
                     .collect(Collectors.toSet());
         }
 
-        //retire les salles ou pas materiel nécessaire
-        for (Salle salle:salleConcordantes) {
-            for (Materiel materiel: entity.getMateriels()) {
-                if(!salle.getContient().contains(materiel))
-                    salleConcordantes.remove(salle);
-            }
-        }
-
-        //Si demande en traitement (donc a un id), on met la salle choisie
-        if(entity.getId()>0) {
-            salleConcordantes.removeAll(salleConcordantes);
-            salleConcordantes.add(entity.getSalle());
-        }
+        //retire les salles où pas materiel nécessaire
+        salleConcordantes.stream()
+                .filter(salle -> salle.getContient().containsAll(entity.getMateriels()))
+                .collect(Collectors.toList());
 
         return salleConcordantes;
     }
