@@ -16,6 +16,7 @@ public interface AuthService {
     AuthDTO login(LoginForm form);
     Long findByLogin(String login);
     void validate(Long id);
+    void unValidate(Long id);
     List<UserDTO>  getAllUnvalidate();
 
 }

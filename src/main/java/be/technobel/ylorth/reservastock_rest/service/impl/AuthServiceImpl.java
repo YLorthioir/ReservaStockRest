@@ -95,12 +95,17 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.findByLogin(login).get().getId();
     }
 
-
-
     @Override
     public void validate(Long id) {
         User user = userRepository.findById(id).get();
         user.setActif(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void unValidate(Long id) {
+        User user = userRepository.findById(id).get();
+        user.setActif(false);
         userRepository.save(user);
     }
 

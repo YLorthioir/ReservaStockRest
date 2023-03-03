@@ -43,4 +43,8 @@ public class AuthController {
     public void validate(@PathVariable long id){
         authService.validate(id);
     }
+    @PostMapping("/unValidate/{id:[0-9]+}")
+    public void unValidate(@PathVariable long id){
+        authService.unValidate(id);
+    }
 }

@@ -41,6 +41,8 @@ public class SecurityConfig {
                     .requestMatchers("/auth/register").hasRole("ADMIN")
                     .requestMatchers("/toValidate").hasRole("ADMIN")
                     .requestMatchers("/validate/{id:[0-9]+}").hasRole("ADMIN")
+                    .requestMatchers("/unValidate/{id:[0-9]+}").hasRole("ADMIN")
+
 
                     .requestMatchers(HttpMethod.POST, "/salle/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PUT, "/salle/**").hasRole("ADMIN")
