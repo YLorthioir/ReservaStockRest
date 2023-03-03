@@ -4,6 +4,7 @@ import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -17,4 +18,5 @@ public class UserDTO {
     private String telephone;
     private String adresse;
     private Set<Role> roles;
+    private LocalDate dateDeNaissance;
 }

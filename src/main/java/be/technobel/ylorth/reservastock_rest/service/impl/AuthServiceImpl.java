@@ -6,7 +6,6 @@ import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import be.technobel.ylorth.reservastock_rest.model.entity.User;
 import be.technobel.ylorth.reservastock_rest.model.form.LoginForm;
 import be.technobel.ylorth.reservastock_rest.model.form.RegisterForm;
-import be.technobel.ylorth.reservastock_rest.model.form.StudentRegisterForm;
 import be.technobel.ylorth.reservastock_rest.repository.UserRepository;
 import be.technobel.ylorth.reservastock_rest.service.AuthService;
 import be.technobel.ylorth.reservastock_rest.service.mapper.UserMapper;
@@ -29,13 +28,15 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final EmailServiceImpl emailService;
 
-    public AuthServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
+    public AuthServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtProvider jwtProvider, EmailServiceImpl emailService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtProvider = jwtProvider;
+        this.emailService = emailService;
     }
 
     @Override
@@ -45,22 +46,23 @@ public class AuthServiceImpl implements AuthService {
 
         User user = userMapper.toEntity(form);
 
-        String login = form.getNom().substring(0,3).concat(form.getPrenom().substring(0,3));
+        String login = form.getNom().substring(0,3).concat(form.getPrenom().substring(0,3)).concat(String.valueOf(form.getDateDeNaissance().getDayOfYear()));
 
         user.setActif(true);
         user.setLogin(login);
+        user.setRoles(form.getRoles());
         user.setMotDePasse( passwordEncoder.encode(form.getMotDePasse()) );
         user = userRepository.save( user );
     }
 
     @Override
-    public void register(StudentRegisterForm form) {
+    public void registerStudent(RegisterForm form) {
         if( userRepository.existsByEmail(form.getEmail()))
             throw new EmailAlreadyTakenException();
 
         User user = userMapper.toEntity(form);
 
-        String login = form.getNom().substring(0,3).concat(form.getPrenom().substring(0,3));
+        String login = form.getNom().substring(0,3).concat(form.getPrenom().substring(0,3)).concat(String.valueOf(form.getDateDeNaissance().getDayOfYear()));
 
         user.setLogin(login);
         user.setMotDePasse( passwordEncoder.encode(form.getMotDePasse()) );
@@ -114,5 +116,16 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.getAllUnvalidate().stream()
                 .map(user -> userMapper.toUserDTO(user))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void sendPassword(String login) {
+        User user = userRepository.findByLogin(login).get();
+
+        String texte = " Bonjour,\n" +
+                "Veuillez vous rendre ici pour changer de mot de passe: http://localhost:8080/swagger \n" +
+                "Si vous n'avez pas fait cette demande, veuillez ignorer ce mail";
+
+        emailService.sendMessage(user.getEmail(), "reset mot de passe", texte);
     }
 }

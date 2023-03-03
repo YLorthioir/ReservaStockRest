@@ -10,6 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -98,6 +99,7 @@ public class DataInit implements InitializingBean {
         user1.setRoles(setRole1);
         user1.setTelephone("0123/2344.233");
         user1.setAdresse("rue du blabla 1");
+        user1.setDateDeNaissance(LocalDate.now());
         user1.setLogin("login");
         user1.setMotDePasse(passwordEncoder.encode("Test1234="));
         user1.setEmail("test@test.be");
@@ -113,6 +115,7 @@ public class DataInit implements InitializingBean {
         user2.setRoles(setRole2);
         user2.setTelephone("0123/234.233");
         user2.setAdresse("rue du blabla 2");
+        user2.setDateDeNaissance(LocalDate.of(1981,11,19));
         user2.setLogin("login2");
         user2.setMotDePasse(passwordEncoder.encode("Test1234="));
         user2.setEmail("test@test.Com");
@@ -124,14 +127,15 @@ public class DataInit implements InitializingBean {
         User user3 = new User();
         Set<Role> setRole3 = new HashSet<>();
         setRole3.add(Role.ADMIN);
-        user3.setNom("Admin");
-        user3.setPrenom("Pierre");
+        user3.setNom("Lorthioir");
+        user3.setPrenom("Yann");
         user3.setRoles(setRole3);
         user3.setTelephone("0123/2333333");
-        user3.setAdresse("rue duel'admin 2");
+        user3.setAdresse("rue de l'admin 2");
+        user3.setDateDeNaissance(LocalDate.of(1991,03,13));
         user3.setLogin("admin");
         user3.setMotDePasse(passwordEncoder.encode("Test1234="));
-        user3.setEmail("test@test.ad");
+        user3.setEmail("y_lorthioir@msn.com");
         user3.setActif(true);
 
 

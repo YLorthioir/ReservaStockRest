@@ -4,7 +4,6 @@ import be.technobel.ylorth.reservastock_rest.model.dto.AuthDTO;
 import be.technobel.ylorth.reservastock_rest.model.dto.UserDTO;
 import be.technobel.ylorth.reservastock_rest.model.form.LoginForm;
 import be.technobel.ylorth.reservastock_rest.model.form.RegisterForm;
-import be.technobel.ylorth.reservastock_rest.model.form.StudentRegisterForm;
 import be.technobel.ylorth.reservastock_rest.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +30,8 @@ public class AuthController {
         authService.register(form);
     }
     @PostMapping("/studentRegister")
-    public void registerStudent(@RequestBody @Valid StudentRegisterForm form){
-        authService.register(form);
+    public void registerStudent(@RequestBody @Valid RegisterForm form){
+        authService.registerStudent(form);
     }
 
     @GetMapping("/toValidate")
@@ -46,5 +45,9 @@ public class AuthController {
     @PostMapping("/unValidate/{id:[0-9]+}")
     public void unValidate(@PathVariable long id){
         authService.unValidate(id);
+    }
+    @PostMapping("/sendPassword")
+    public void sendPassword(@RequestBody @Valid LoginForm form){
+        authService.sendPassword(form.getLogin());
     }
 }

@@ -1,16 +1,14 @@
 package be.technobel.ylorth.reservastock_rest.model.form;
 
-import be.technobel.ylorth.reservastock_rest.model.entity.Demande;
 import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import be.technobel.ylorth.reservastock_rest.validation.constraints.ConfirmPassword;
 import be.technobel.ylorth.reservastock_rest.validation.constraints.EmailNotTaken;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
-import java.util.LinkedHashSet;
+import java.time.LocalDate;
 import java.util.Set;
+
 
 @Data
 @ConfirmPassword
@@ -37,6 +35,8 @@ public class RegisterForm {
     @NotNull
     @Size(min = 4, max = 100)
     private String adresse;
-
+    @Past
+    private LocalDate dateDeNaissance;
+    private Set<Role> roles;
 
 }
