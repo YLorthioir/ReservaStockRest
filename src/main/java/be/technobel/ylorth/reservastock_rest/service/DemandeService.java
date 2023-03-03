@@ -16,7 +16,7 @@ public interface DemandeService {
     List<DemandeDTO> getAllUnconfirm();
     List<DemandeDTO> getAllByUser(String username);
     DemandeDTO getOne(Long id);
-    void insert(DemandeForm form);
+    void insert(DemandeForm form, Authentication authentication);
     void update(DemandeForm form, Long id);
     void confirm(ConfirmForm form, Long id);
     void delete(Long id, Authentication authentication);

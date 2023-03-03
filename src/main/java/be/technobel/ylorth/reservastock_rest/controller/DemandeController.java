@@ -39,8 +39,7 @@ public class DemandeController {
 
     @PostMapping("/add")
     public void addDemande(@RequestBody @Valid DemandeForm form, Authentication authentication){
-        form.setUser(authService.findByLogin(authentication.getPrincipal().toString()));
-        demandeService.insert(form);
+        demandeService.insert(form, authentication);
     }
 
     @PatchMapping("/{id:[0-9]+}/confirm")

@@ -66,7 +66,7 @@ public class DemandeServiceImpl implements DemandeService {
     }
 
     @Override
-    public void insert(DemandeForm form) {
+    public void insert(DemandeForm form, Authentication authentication) {
         if( form == null )
             throw new IllegalArgumentException("form should not be null");
 
@@ -74,7 +74,7 @@ public class DemandeServiceImpl implements DemandeService {
         entity.setMateriels(
                 new HashSet<>(materielRepository.findAllById(form.getMateriels()))
         );
-        entity.setUser(userRepository.findById(form.getUser()).get());
+        entity.setUser(userRepository.findByLogin(authentication.getPrincipal().toString()).get());
         entity.setSalle(salleRepository.findById(form.getSalle()).get());
 
         demandeRepository.save(verification(entity));
