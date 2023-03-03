@@ -146,19 +146,17 @@ public class DemandeServiceImpl implements DemandeService {
         //Set de salles non dispo à ce moment
         Set<Salle> salleNonDispo = new HashSet<>();
 
-        for (Salle salle:salleConcordantes) {
+        salleConcordantes.forEach(salle ->  {
 
-            List<Demande> listeDemande = demandeRepository.findAll().stream()
+            demandeRepository.findAll().stream()
                     .filter(demande -> salle == demande.getSalle() && demande.getAdmin()!= null && demande.getRaisonRefus()==null)
-                    .toList();
-
-            listeDemande.forEach(demande -> {
-                if(!(entity.getCreneau().plusMinutes(entity.getMinutes()).isBefore(demande.getCreneau()) || entity.getCreneau().isAfter(demande.getCreneau().plusMinutes(demande.getMinutes())))) {
-                    salleNonDispo.add(salle);
-                    demandeDeSalleConcordanteDejaValide.add(demande);
-                }
-            });
-        }
+                    .forEach(demande -> {
+                        if(!(entity.getCreneau().plusMinutes(entity.getMinutes()).isBefore(demande.getCreneau()) || entity.getCreneau().isAfter(demande.getCreneau().plusMinutes(demande.getMinutes())))) {
+                            salleNonDispo.add(salle);
+                            demandeDeSalleConcordanteDejaValide.add(demande);
+                        }
+                    });
+        });
 
         //si salleNonDispo < salles concordantes: il y a une salle qui correspond à la demande dispo.
         //si non, on regarde si c'est un prof qui a fait la demande
