@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import be.technobel.ylorth.reservastock_rest.model.dto.AuthDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final EmailServiceImpl emailService;
+    private final HashMap<String,LocalTime> resetProcess = new HashMap<>();
 
     public AuthServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtProvider jwtProvider, EmailServiceImpl emailService) {
         this.userRepository = userRepository;
@@ -114,18 +117,34 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public List<UserDTO> getAllUnvalidate() {
         return userRepository.getAllUnvalidate().stream()
-                .map(user -> userMapper.toUserDTO(user))
+                .map(userMapper::toUserDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void sendPassword(String login) {
+    public void sendPasswordMail(String login) {
         User user = userRepository.findByLogin(login).get();
+
+        resetProcess.remove(login);
 
         String texte = " Bonjour,\n" +
                 "Veuillez vous rendre ici pour changer de mot de passe: http://localhost:8080/swagger \n" +
                 "Si vous n'avez pas fait cette demande, veuillez ignorer ce mail";
 
         emailService.sendMessage(user.getEmail(), "reset mot de passe", texte);
+        resetProcess.put(user.getLogin(),LocalTime.now());
     }
+
+    @Override
+    public void resetPassword(String password, String email) {
+        if (resetProcess.containsKey(userRepository.findByEmail(email).get().getLogin())&&(LocalTime.now().isBefore(resetProcess.get(userRepository.findByEmail(email).get().getLogin()).plusMinutes(10)))) {
+            User user = userRepository.findByEmail(email).get();
+            user.setMotDePasse(password);
+            userRepository.save(user);
+            resetProcess.remove(userRepository.findByEmail(email).get().getLogin());
+        } else
+            resetProcess.remove(userRepository.findByEmail(email).get().getLogin());
+
+    }
+
 }

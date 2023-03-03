@@ -16,6 +16,7 @@ public interface AuthService {
     void validate(Long id);
     void unValidate(Long id);
     List<UserDTO>  getAllUnvalidate();
-    void sendPassword(String login);
+    void sendPasswordMail(String login);
+    void resetPassword(String password, String email);
 
 }

@@ -47,7 +47,11 @@ public class AuthController {
         authService.unValidate(id);
     }
     @PostMapping("/sendPassword")
-    public void sendPassword(@RequestBody @Valid LoginForm form){
-        authService.sendPassword(form.getLogin());
+    public void sendPasswordMail(@RequestBody @Valid LoginForm form){
+        authService.sendPasswordMail(form.getLogin());
+    }
+    @PostMapping("/newPassword")
+    public void newPassword(@RequestBody String password, @RequestParam String email){
+        authService.resetPassword(password, email);
     }
 }

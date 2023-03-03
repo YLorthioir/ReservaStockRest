@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Long> {
     boolean existsByEmail(String email);
     Optional<User> findByLogin(String login);
+    Optional<User> findByEmail(String email);
     @Query("Select u from User u where u.actif=false")
     public List<User> getAllUnvalidate();
 }

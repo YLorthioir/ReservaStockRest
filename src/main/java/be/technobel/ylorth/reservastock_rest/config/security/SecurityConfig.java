@@ -38,6 +38,8 @@ public class SecurityConfig {
 
                     .requestMatchers("/auth/login").anonymous()
                     .requestMatchers("/auth/studentRegister").anonymous()
+                    .requestMatchers("/auth/sendPasswordMail").anonymous()
+                    .requestMatchers("/auth/newPassword").anonymous()
                     .requestMatchers("/auth/register").hasRole("ADMIN")
                     .requestMatchers("/toValidate").hasRole("ADMIN")
                     .requestMatchers("/validate/{id:[0-9]+}").hasRole("ADMIN")
