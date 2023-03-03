@@ -39,8 +39,8 @@ public class AuthController {
     public List<UserDTO> toValidate(){
         return authService.getAllUnvalidate();
     }
-    @PostMapping("/{id:[0-9]+}")
-    public void validate(@PathVariable long idUserToValidate){
-        authService.validate(idUserToValidate);
+    @PostMapping("/validate/{id:[0-9]+}")
+    public void validate(@PathVariable long id){
+        authService.validate(id);
     }
 }
