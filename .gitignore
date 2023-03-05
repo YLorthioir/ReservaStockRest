@@ -3,7 +3,6 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-src/main/java/be/technobel/ylorth/reservastock_rest/utils/DataInit.java
 
 ### STS ###
 .apt_generated
