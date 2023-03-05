@@ -13,7 +13,6 @@ import be.technobel.ylorth.reservastock_rest.repository.SalleRepository;
 import be.technobel.ylorth.reservastock_rest.repository.UserRepository;
 import be.technobel.ylorth.reservastock_rest.service.DemandeService;
 import be.technobel.ylorth.reservastock_rest.service.mapper.DemandeMapper;
-import be.technobel.ylorth.reservastock_rest.service.mapper.SalleMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -29,16 +28,14 @@ public class DemandeServiceImpl implements DemandeService {
 
     private final DemandeRepository demandeRepository;
     private final DemandeMapper demandeMapper;
-    private final SalleMapper salleMapper;
     private final MaterielRepository materielRepository;
     private final SalleRepository salleRepository;
     private final UserRepository userRepository;
 
-    public DemandeServiceImpl(DemandeRepository demandeRepository, DemandeMapper demandeMapper, SalleMapper salleMapper, MaterielRepository materielRepository, SalleRepository salleRepository,
+    public DemandeServiceImpl(DemandeRepository demandeRepository, DemandeMapper demandeMapper, MaterielRepository materielRepository, SalleRepository salleRepository,
                               UserRepository userRepository) {
         this.demandeRepository = demandeRepository;
         this.demandeMapper = demandeMapper;
-        this.salleMapper = salleMapper;
         this.materielRepository = materielRepository;
         this.salleRepository = salleRepository;
         this.userRepository = userRepository;

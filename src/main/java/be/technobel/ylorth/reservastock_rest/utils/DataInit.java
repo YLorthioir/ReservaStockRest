@@ -1,10 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.utils;
 
 import be.technobel.ylorth.reservastock_rest.model.entity.*;
-import be.technobel.ylorth.reservastock_rest.repository.DemandeRepository;
-import be.technobel.ylorth.reservastock_rest.repository.MaterielRepository;
-import be.technobel.ylorth.reservastock_rest.repository.SalleRepository;
-import be.technobel.ylorth.reservastock_rest.repository.UserRepository;
+import be.technobel.ylorth.reservastock_rest.repository.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +16,7 @@ import java.util.Set;
 @Component
 @Log4j2
 public class DataInit implements InitializingBean {
+    private final AdresseRepository adresseRepository;
     private final DemandeRepository demandeRepository;
     private final UserRepository userRepository;
 
@@ -29,12 +27,14 @@ public class DataInit implements InitializingBean {
     public DataInit(SalleRepository salleRepository, MaterielRepository materielRepository,
                     UserRepository userRepository,
                     DemandeRepository demandeRepository,
-                    PasswordEncoder passwordEncoder) {
+                    PasswordEncoder passwordEncoder,
+                    AdresseRepository adresseRepository) {
         this.salleRepository = salleRepository;
         this.materielRepository = materielRepository;
         this.userRepository = userRepository;
         this.demandeRepository = demandeRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adresseRepository = adresseRepository;
     }
 
     @Override
@@ -91,6 +91,15 @@ public class DataInit implements InitializingBean {
 
         salleRepository.save(salle3);
 
+        Adresse addresseUser1 = new Adresse();
+        addresseUser1.setNumero("1");
+        addresseUser1.setRue("rue du blabla");
+        addresseUser1.setCodePostal(5000);
+        addresseUser1.setVille("Namur");
+        addresseUser1.setPays("Belgique");
+
+        addresseUser1 = adresseRepository.save(addresseUser1);
+
         User user1 = new User();
         Set<Role> setRole1 = new HashSet<>();
         setRole1.add(Role.ETUDIANT);
@@ -98,7 +107,7 @@ public class DataInit implements InitializingBean {
         user1.setPrenom("Jean");
         user1.setRoles(setRole1);
         user1.setTelephone("0123/2344.233");
-        user1.setAdresse("rue du blabla 1");
+        user1.setAdresse(addresseUser1);
         user1.setDateDeNaissance(LocalDate.now());
         user1.setLogin("login");
         user1.setMotDePasse(passwordEncoder.encode("Test1234="));
@@ -107,6 +116,15 @@ public class DataInit implements InitializingBean {
 
         user1 = userRepository.save(user1);
 
+        Adresse addresseUser2 = new Adresse();
+        addresseUser2.setNumero("3");
+        addresseUser2.setRue("rue du blablo");
+        addresseUser2.setCodePostal(5001);
+        addresseUser2.setVille("Jambes");
+        addresseUser2.setPays("Belgique");
+
+        addresseUser2 = adresseRepository.save(addresseUser2);
+
         User user2 = new User();
         Set<Role> setRole2 = new HashSet<>();
         setRole2.add(Role.PROFESSEUR);
@@ -114,15 +132,23 @@ public class DataInit implements InitializingBean {
         user2.setPrenom("Pierre");
         user2.setRoles(setRole2);
         user2.setTelephone("0123/234.233");
-        user2.setAdresse("rue du blabla 2");
+        user2.setAdresse(addresseUser2);
         user2.setDateDeNaissance(LocalDate.of(1981,11,19));
         user2.setLogin("login2");
         user2.setMotDePasse(passwordEncoder.encode("Test1234="));
         user2.setEmail("test@test.Com");
         user2.setActif(true);
 
-
         user2 = userRepository.save(user2);
+
+        Adresse addresseUser3 = new Adresse();
+        addresseUser3.setNumero("3");
+        addresseUser3.setRue("Chemin de la bioce");
+        addresseUser3.setCodePostal(6833);
+        addresseUser3.setVille("Ucimont");
+        addresseUser3.setPays("Belgique");
+
+        addresseUser3 = adresseRepository.save(addresseUser3);
 
         User user3 = new User();
         Set<Role> setRole3 = new HashSet<>();
@@ -131,7 +157,7 @@ public class DataInit implements InitializingBean {
         user3.setPrenom("Yann");
         user3.setRoles(setRole3);
         user3.setTelephone("0123/2333333");
-        user3.setAdresse("rue de l'admin 2");
+        user3.setAdresse(addresseUser3);
         user3.setDateDeNaissance(LocalDate.of(1991,03,13));
         user3.setLogin("admin");
         user3.setMotDePasse(passwordEncoder.encode("Test1234="));

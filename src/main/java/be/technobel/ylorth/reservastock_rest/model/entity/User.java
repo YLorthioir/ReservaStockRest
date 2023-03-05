@@ -34,8 +34,11 @@ public class User implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String telephone;
-    @Column(nullable = false)
-    private String adresse;
+
+    @ManyToOne
+    @JoinColumn(name = "adresse_id")
+    private Adresse adresse;
+
     @Column(nullable = false)
     private LocalDate dateDeNaissance;
     @Enumerated(EnumType.STRING)

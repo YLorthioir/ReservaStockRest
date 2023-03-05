@@ -1,6 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.service.mapper;
 
 import be.technobel.ylorth.reservastock_rest.model.dto.UserDTO;
+import be.technobel.ylorth.reservastock_rest.model.entity.Adresse;
 import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import be.technobel.ylorth.reservastock_rest.model.entity.User;
 import be.technobel.ylorth.reservastock_rest.model.form.RegisterForm;
@@ -10,9 +11,11 @@ import org.springframework.stereotype.Service;
 public class UserMapper {
 
     DemandeMapper demandeMapper;
+    AdresseMapper adresseMapper;
 
-    public UserMapper(DemandeMapper demandeMapper) {
+    public UserMapper(DemandeMapper demandeMapper, AdresseMapper adresseMapper) {
         this.demandeMapper = demandeMapper;
+        this.adresseMapper = adresseMapper;
     }
 
 
@@ -27,21 +30,21 @@ public class UserMapper {
                 .prenom(entity.getPrenom())
                 .login(entity.getLogin())
                 .roles(entity.getRoles())
-                .adresse(entity.getAdresse())
+                .adresse(adresseMapper.toDTO(entity.getAdresse()))
                 .email(entity.getEmail())
                 .telephone(entity.getTelephone())
                 .dateDeNaissance(entity.getDateDeNaissance())
                 .build();
     }
 
-    public User toEntity(RegisterForm form){
+    public User toEntity(RegisterForm form, Adresse adresse){
 
         if(form == null)
             return null;
 
         User user = new User();
 
-        user.setAdresse(form.getAdresse());
+        user.setAdresse(adresse);
         user.setNom(form.getNom());
         user.setPrenom(form.getPrenom());
         user.setMotDePasse(form.getMotDePasse());
