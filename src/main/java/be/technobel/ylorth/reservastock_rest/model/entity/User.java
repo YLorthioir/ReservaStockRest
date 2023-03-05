@@ -23,31 +23,30 @@ public class User implements UserDetails {
     @Column(name = "user_id", nullable = false, unique = true)
     long id;
     @Column(nullable = false)
-    private String nom;
+    private String lastname;
     @Column(nullable = false)
-    private String prenom;
+    private String firstname;
     @Column(nullable = false)
-    private String motDePasse;
+    private String password;
     @Column(nullable = false, unique = true)
     private String login;
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
-    private String telephone;
-
+    private String phone;
     @ManyToOne
-    @JoinColumn(name = "adresse_id")
-    private Adresse adresse;
+    @JoinColumn(name = "adress_id")
+    private Adress adress;
 
     @Column(nullable = false)
-    private LocalDate dateDeNaissance;
+    private LocalDate birthdate;
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles = new LinkedHashSet<>();
     @Column(nullable = false)
-    private boolean actif;
+    private boolean enabled;
     @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private Set<Demande> demandes = new LinkedHashSet<>();
+    private Set<Request> requests = new LinkedHashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -58,7 +57,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return motDePasse;
+        return password;
     }
 
     @Override
@@ -83,6 +82,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return actif;
+        return enabled;
     }
 }

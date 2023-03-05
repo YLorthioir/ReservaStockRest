@@ -3,10 +3,8 @@ package be.technobel.ylorth.reservastock_rest.model.form;
 import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import be.technobel.ylorth.reservastock_rest.validation.constraints.ConfirmPassword;
 import be.technobel.ylorth.reservastock_rest.validation.constraints.EmailNotTaken;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -17,41 +15,41 @@ import java.util.Set;
 public class RegisterForm {
     @NotNull
     @Size(min = 4, max = 40)
-    private String nom;
+    private String lastname;
     @NotNull
     @Size(min = 4, max = 40)
-    private String prenom;
+    private String firstname;
     @NotNull
     @Size(min = 4, max = 40)
-    private String motDePasse;
+    private String password;
     @NotNull
     @Size(min = 4, max = 40)
-    private String confirmMotDePasse;
+    private String confirmPassword;
     @NotNull
     @Email
     @EmailNotTaken
     private String email;
     @NotNull
     @Size(min = 8, max = 13)
-    private String telephone;
+    private String phone;
     @NotNull
     @Size(max = 4)
-    private String numero;
+    private String number;
     @NotNull
     @Size(min = 4, max = 100)
-    private String rue;
+    private String street;
     @NotNull
     @Min(1000)
     @Max(99999)
-    private int codePostal;
+    private int postCode;
     @NotNull
     @Size(min = 4, max = 100)
-    private String ville;
+    private String city;
     @NotNull
     @Size(min = 4, max = 100)
-    private String pays;
+    private String country;
     @Past
-    private LocalDate dateDeNaissance;
+    private LocalDate birthdate;
     private Set<Role> roles;
 
 }

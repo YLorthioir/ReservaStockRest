@@ -10,15 +10,15 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-public class Materiel {
+public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "materiel_id", nullable = false, unique = true)
+    @Column(name = "material_id", nullable = false, unique = true)
     private long id;
     @Column(nullable = false, unique = true)
-    private String nom;
+    private String name;
 
-    @ManyToMany(mappedBy = "contient")
-    private Set<Salle> salles = new LinkedHashSet<>();
+    @ManyToMany(mappedBy = "contains")
+    private Set<Room> rooms = new LinkedHashSet<>();
 
 }

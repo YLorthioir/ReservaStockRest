@@ -1,8 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.service.mapper;
 
 import be.technobel.ylorth.reservastock_rest.model.dto.UserDTO;
-import be.technobel.ylorth.reservastock_rest.model.entity.Adresse;
-import be.technobel.ylorth.reservastock_rest.model.entity.Role;
+import be.technobel.ylorth.reservastock_rest.model.entity.Adress;
 import be.technobel.ylorth.reservastock_rest.model.entity.User;
 import be.technobel.ylorth.reservastock_rest.model.form.RegisterForm;
 import org.springframework.stereotype.Service;
@@ -10,12 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserMapper {
 
-    DemandeMapper demandeMapper;
-    AdresseMapper adresseMapper;
+    RequestMapper requestMapper;
+    AdressMapper adressMapper;
 
-    public UserMapper(DemandeMapper demandeMapper, AdresseMapper adresseMapper) {
-        this.demandeMapper = demandeMapper;
-        this.adresseMapper = adresseMapper;
+    public UserMapper(RequestMapper requestMapper, AdressMapper adressMapper) {
+        this.requestMapper = requestMapper;
+        this.adressMapper = adressMapper;
     }
 
 
@@ -26,31 +25,31 @@ public class UserMapper {
 
         return UserDTO.builder()
                 .id(entity.getId())
-                .nom(entity.getNom())
-                .prenom(entity.getPrenom())
+                .lastname(entity.getLastname())
+                .firstname(entity.getFirstname())
                 .login(entity.getLogin())
                 .roles(entity.getRoles())
-                .adresse(adresseMapper.toDTO(entity.getAdresse()))
+                .adress(adressMapper.toDTO(entity.getAdress()))
                 .email(entity.getEmail())
-                .telephone(entity.getTelephone())
-                .dateDeNaissance(entity.getDateDeNaissance())
+                .phone(entity.getPhone())
+                .birthdate(entity.getBirthdate())
                 .build();
     }
 
-    public User toEntity(RegisterForm form, Adresse adresse){
+    public User toEntity(RegisterForm form, Adress adress){
 
         if(form == null)
             return null;
 
         User user = new User();
 
-        user.setAdresse(adresse);
-        user.setNom(form.getNom());
-        user.setPrenom(form.getPrenom());
-        user.setMotDePasse(form.getMotDePasse());
+        user.setAdress(adress);
+        user.setLastname(form.getLastname());
+        user.setFirstname(form.getFirstname());
+        user.setPassword(form.getPassword());
         user.setEmail(form.getEmail());
-        user.setTelephone(form.getTelephone());
-        user.setDateDeNaissance(form.getDateDeNaissance());
+        user.setPhone(form.getPhone());
+        user.setBirthdate(form.getBirthdate());
 
         return user;
     }

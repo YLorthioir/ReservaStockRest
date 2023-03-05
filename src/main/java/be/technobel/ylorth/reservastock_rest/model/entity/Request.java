@@ -11,18 +11,18 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-public class Demande {
+public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "demande_id", nullable = false, unique = true)
+    @Column(name = "request_id", nullable = false, unique = true)
     private long id;
     @Column(nullable = false)
-    private LocalDateTime creneau;
+    private LocalDateTime startTime;
     @Column(nullable = false)
     private int minutes;
-    private String raisonDemande;
-    private String raisonRefus;
+    private String requestReason;
+    private String refusalReason;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -32,13 +32,13 @@ public class Demande {
     private User admin;
 
     @ManyToOne
-    @JoinColumn(name = "salle_id")
-    private Salle salle;
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     @ManyToMany
-    @JoinTable(name = "demande_materiels",
-            joinColumns = @JoinColumn(name = "demande_id"),
-            inverseJoinColumns = @JoinColumn(name = "materiel_id"))
-    private Set<Materiel> materiels = new LinkedHashSet<>();
+    @JoinTable(name = "requested_materials",
+            joinColumns = @JoinColumn(name = "request_id"),
+            inverseJoinColumns = @JoinColumn(name = "material_id"))
+    private Set<Material> materials = new LinkedHashSet<>();
 
 }

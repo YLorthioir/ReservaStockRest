@@ -2,17 +2,17 @@ package be.technobel.ylorth.reservastock_rest.service.impl;
 
 import be.technobel.ylorth.reservastock_rest.exception.EmailAlreadyTakenException;
 import be.technobel.ylorth.reservastock_rest.model.dto.UserDTO;
-import be.technobel.ylorth.reservastock_rest.model.entity.Adresse;
+import be.technobel.ylorth.reservastock_rest.model.entity.Adress;
 import be.technobel.ylorth.reservastock_rest.model.entity.ResetValidator;
 import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import be.technobel.ylorth.reservastock_rest.model.entity.User;
 import be.technobel.ylorth.reservastock_rest.model.form.LoginForm;
 import be.technobel.ylorth.reservastock_rest.model.form.RegisterForm;
-import be.technobel.ylorth.reservastock_rest.repository.AdresseRepository;
+import be.technobel.ylorth.reservastock_rest.repository.AdressRepository;
 import be.technobel.ylorth.reservastock_rest.repository.ResetValidatorRepository;
 import be.technobel.ylorth.reservastock_rest.repository.UserRepository;
 import be.technobel.ylorth.reservastock_rest.service.AuthService;
-import be.technobel.ylorth.reservastock_rest.service.mapper.AdresseMapper;
+import be.technobel.ylorth.reservastock_rest.service.mapper.AdressMapper;
 import be.technobel.ylorth.reservastock_rest.service.mapper.UserMapper;
 import be.technobel.ylorth.reservastock_rest.utils.JwtProvider;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +22,6 @@ import be.technobel.ylorth.reservastock_rest.model.dto.AuthDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,8 +35,8 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final EmailServiceImpl emailService;
-    private final AdresseMapper adresseMapper;
-    private final AdresseRepository adresseRepository;
+    private final AdressMapper adressMapper;
+    private final AdressRepository adressRepository;
     private final ResetValidatorRepository resetValidatorRepository;
 
     public AuthServiceImpl(UserRepository userRepository,
@@ -46,16 +45,16 @@ public class AuthServiceImpl implements AuthService {
                            AuthenticationManager authenticationManager,
                            JwtProvider jwtProvider,
                            EmailServiceImpl emailService,
-                           AdresseMapper adresseMapper,
-                           AdresseRepository adresseRepository, ResetValidatorRepository resetValidatorRepository) {
+                           AdressMapper adressMapper,
+                           AdressRepository adressRepository, ResetValidatorRepository resetValidatorRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtProvider = jwtProvider;
         this.emailService = emailService;
-        this.adresseMapper = adresseMapper;
-        this.adresseRepository = adresseRepository;
+        this.adressMapper = adressMapper;
+        this.adressRepository = adressRepository;
         this.resetValidatorRepository = resetValidatorRepository;
     }
 
@@ -64,18 +63,18 @@ public class AuthServiceImpl implements AuthService {
         if( userRepository.existsByEmail(form.getEmail()))
             throw new EmailAlreadyTakenException();
 
-        Adresse adresse = adresseMapper.toEntity(form);
+        Adress adress = adressMapper.toEntity(form);
 
-        adresse = adresseRepository.save(adresse);
+        adress = adressRepository.save(adress);
 
-        User user = userMapper.toEntity(form, adresse);
+        User user = userMapper.toEntity(form, adress);
 
-        String login = form.getNom().substring(0,3).concat(form.getPrenom().substring(0,3)).concat(String.valueOf(form.getDateDeNaissance().getDayOfYear()));
+        String login = form.getLastname().substring(0,3).concat(form.getFirstname().substring(0,3)).concat(String.valueOf(form.getBirthdate().getDayOfYear()));
 
-        user.setActif(true);
+        user.setEnabled(true);
         user.setLogin(login);
         user.setRoles(form.getRoles());
-        user.setMotDePasse( passwordEncoder.encode(form.getMotDePasse()) );
+        user.setPassword( passwordEncoder.encode(form.getPassword()) );
         user = userRepository.save( user );
     }
 
@@ -84,17 +83,17 @@ public class AuthServiceImpl implements AuthService {
         if( userRepository.existsByEmail(form.getEmail()))
             throw new EmailAlreadyTakenException();
 
-        Adresse adresse = adresseMapper.toEntity(form);
+        Adress adress = adressMapper.toEntity(form);
 
-        adresse = adresseRepository.save(adresse);
+        adress = adressRepository.save(adress);
 
-        User user = userMapper.toEntity(form, adresse);
+        User user = userMapper.toEntity(form, adress);
 
-        String login = form.getNom().substring(0,3).concat(form.getPrenom().substring(0,3)).concat(String.valueOf(form.getDateDeNaissance().getDayOfYear()));
+        String login = form.getLastname().substring(0,3).concat(form.getFirstname().substring(0,3)).concat(String.valueOf(form.getBirthdate().getDayOfYear()));
 
         user.setLogin(login);
-        user.setMotDePasse( passwordEncoder.encode(form.getMotDePasse()) );
-        user.getRoles().add(Role.ETUDIANT);
+        user.setPassword( passwordEncoder.encode(form.getPassword()) );
+        user.getRoles().add(Role.STUDENT);
         user = userRepository.save( user );
 
     }
@@ -106,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthDTO login(LoginForm form) {
-        authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(form.getLogin(),form.getMotDePasse()) );
+        authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(form.getLogin(),form.getPassword()) );
 
         User user = userRepository.findByLogin(form.getLogin() )
                 .orElseThrow();
@@ -128,14 +127,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void validate(Long id) {
         User user = userRepository.findById(id).get();
-        user.setActif(true);
+        user.setEnabled(true);
         userRepository.save(user);
     }
 
     @Override
     public void unValidate(Long id) {
         User user = userRepository.findById(id).get();
-        user.setActif(false);
+        user.setEnabled(false);
         userRepository.save(user);
     }
 
@@ -171,7 +170,7 @@ public class AuthServiceImpl implements AuthService {
 
         if(resetValidatorRepository.existsByLogin(userRepository.findByEmail(email).get().getLogin()) && (LocalDateTime.now().isBefore(resetValidatorRepository.findByLogin(userRepository.findByEmail(email).get().getLogin()).getResetTime().plusMinutes(10)))){
             User user = userRepository.findByEmail(email).get();
-            user.setMotDePasse(passwordEncoder.encode(password));
+            user.setPassword(passwordEncoder.encode(password));
             userRepository.save(user);
             resetValidatorRepository.deleteById(resetValidatorRepository.findByLogin(userRepository.findByEmail(email).get().getLogin()).getId());
 

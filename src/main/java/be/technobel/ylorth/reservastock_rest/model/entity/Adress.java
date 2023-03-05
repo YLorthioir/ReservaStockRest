@@ -6,21 +6,21 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter
-public class Adresse {
+public class Adress {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "adresse_id", nullable = false, unique = true)
+    @Column(name = "adress_id", nullable = false, unique = true)
     private Long id;
     @Column(nullable = false)
-    private String numero;
+    private String number;
     @Column(nullable = false)
-    private String rue;
+    private String street;
     @Column(nullable = false)
-    private int codePostal;
+    private int postCode;
     @Column(nullable = false)
-    private String ville;
+    private String city;
     @Column(nullable = false)
-    private String pays;
+    private String country;
 
 
 }

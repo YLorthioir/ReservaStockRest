@@ -9,10 +9,10 @@ import java.util.Set;
 @Data
 public class ConfirmForm {
 
-    private String raisonRefus;
-    private boolean valide;
+    private String refusalReason;
+    private boolean valid;
     private Long admin;
-    private Long salle;
+    private Long room;
 
 
 }

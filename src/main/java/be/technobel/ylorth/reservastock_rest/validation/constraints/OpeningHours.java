@@ -1,6 +1,6 @@
 package be.technobel.ylorth.reservastock_rest.validation.constraints;
 
-import be.technobel.ylorth.reservastock_rest.validation.validators.PendantHeureOuvertureValidator;
+import be.technobel.ylorth.reservastock_rest.validation.validators.OpeningHoursValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -11,10 +11,10 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = PendantHeureOuvertureValidator.class)
-public @interface PendantHeuresOuverture {
+@Constraint(validatedBy = OpeningHoursValidator.class)
+public @interface OpeningHours {
 
-    String message() default "Demande hors horaire";
+    String message() default "The request must be in the opening hours";
 
     Class<?>[] groups() default { };
 

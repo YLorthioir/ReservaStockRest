@@ -1,6 +1,6 @@
 package be.technobel.ylorth.reservastock_rest.model.form;
 
-import be.technobel.ylorth.reservastock_rest.model.dto.DemandeDTO;
+import be.technobel.ylorth.reservastock_rest.model.dto.RequestDTO;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -9,17 +9,17 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Data
-public class SalleForm {
+public class RoomForm {
 
     @NotNull
-    private int capacite;
+    private int capacity;
     @NotNull
     @Size(min = 4, max = 40)
-    private String nom;
+    private String name;
 
-    boolean pourPersonnel;
-    private Set<DemandeDTO> reserve;
+    boolean forStaff;
+    private Set<RequestDTO> reserved;
 
-    private Set<Long> contient = new LinkedHashSet<>();
+    private Set<Long> contains = new LinkedHashSet<>();
 
 }

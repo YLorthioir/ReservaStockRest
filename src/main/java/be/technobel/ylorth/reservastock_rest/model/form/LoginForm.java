@@ -11,5 +11,5 @@ public class LoginForm {
     private String login;
     @NotNull
     @Size(min = 4, max = 40)
-    private String motDePasse;
+    private String password;
 }

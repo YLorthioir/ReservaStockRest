@@ -4,24 +4,23 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Data
 @Builder
-public class DemandeDTO {
+public class RequestDTO {
     private long id;
-    private LocalDateTime creneau;
-    private String raisonDemande;
-    private String raisonRefus;
+    private LocalDateTime startTime;
+    private String requestReason;
+    private String refusalReason;
     private int minutes;
 
     private Long userId;
 
     private Long adminId;
 
-    private Long salleId;
+    private Long roomId;
 
-    private Set<MaterielDTO> materiels = new LinkedHashSet<>();
+    private Set<MaterialDTO> materials;
 
 }

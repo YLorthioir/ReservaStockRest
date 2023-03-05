@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class MaterielDTO {
+public class MaterialDTO {
 
     private long id;
-    private String nom;
+    private String name;
 }

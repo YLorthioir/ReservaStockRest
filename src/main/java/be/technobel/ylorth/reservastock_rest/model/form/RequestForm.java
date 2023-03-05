@@ -1,6 +1,6 @@
 package be.technobel.ylorth.reservastock_rest.model.form;
 
-import be.technobel.ylorth.reservastock_rest.validation.constraints.PendantHeuresOuverture;
+import be.technobel.ylorth.reservastock_rest.validation.constraints.OpeningHours;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -8,19 +8,19 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-@PendantHeuresOuverture
-public class DemandeForm {
+@OpeningHours
+public class RequestForm {
     @NotNull(message = "Entrez un créneau")
-    private LocalDateTime creneau;
+    private LocalDateTime starTime;
     @NotNull
-    private String raisonDemande;
+    private String requestReason;
     @NotNull
     private int minutes;
     @NotNull
     private Long user;
     @NotNull
-    private Long salle;
+    private Long room;
 
-    private Set<Long> materiels;
+    private Set<Long> materials;
 
 }

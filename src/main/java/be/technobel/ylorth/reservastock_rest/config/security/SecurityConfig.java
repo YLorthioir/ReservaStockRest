@@ -41,23 +41,23 @@ public class SecurityConfig {
                     .requestMatchers("/auth/sendPasswordMail").anonymous()
                     .requestMatchers("/auth/newPassword").anonymous()
                     .requestMatchers("/auth/register").hasRole("ADMIN")
-                    .requestMatchers("/toValidate").hasRole("ADMIN")
-                    .requestMatchers("/validate/{id:[0-9]+}").hasRole("ADMIN")
-                    .requestMatchers("/unValidate/{id:[0-9]+}").hasRole("ADMIN")
+                    .requestMatchers("/auth/toValidate").hasRole("ADMIN")
+                    .requestMatchers("/auth/validate/{id:[0-9]+}").hasRole("ADMIN")
+                    .requestMatchers("/auth/unValidate/{id:[0-9]+}").hasRole("ADMIN")
 
 
-                    .requestMatchers(HttpMethod.POST, "/salle/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/salle/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.GET, "/salle/**").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/room/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/room/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/room/**").authenticated()
 
-                    .requestMatchers(HttpMethod.POST, "/materiel/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/materiel/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.GET, "/materiel/**").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/material/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/material/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/material/**").authenticated()
 
-                    .requestMatchers(HttpMethod.GET,"/demande/allUnconfirm").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/demande/{id:[0-9]+}").authenticated()
-                    .requestMatchers(HttpMethod.PATCH,"/demande/{id:[0-9]+}/confirm").hasRole("ADMIN")
-                    .requestMatchers("/demande/**").authenticated()
+                    .requestMatchers(HttpMethod.GET,"/request/allUnconfirmed").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/request/{id:[0-9]+}").authenticated()
+                    .requestMatchers(HttpMethod.PATCH,"/request/{id:[0-9]+}/confirm").hasRole("ADMIN")
+                    .requestMatchers("/request/**").authenticated()
 
 
                     .requestMatchers( request -> request.getRequestURI().length() > 500 ).denyAll()

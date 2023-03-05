@@ -11,12 +11,12 @@ import java.util.Set;
 @Builder
 public class UserDTO {
     long id;
-    private String nom;
-    private String prenom;
+    private String lastname;
+    private String firstname;
     private String login;
     private String email;
-    private String telephone;
-    private AdresseDTO adresse;
+    private String phone;
+    private AdressDTO adress;
     private Set<Role> roles;
-    private LocalDate dateDeNaissance;
+    private LocalDate birthdate;
 }
