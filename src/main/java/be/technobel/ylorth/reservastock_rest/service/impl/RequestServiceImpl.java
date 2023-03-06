@@ -2,6 +2,7 @@ package be.technobel.ylorth.reservastock_rest.service.impl;
 
 import be.technobel.ylorth.reservastock_rest.exception.NotFoundException;
 import be.technobel.ylorth.reservastock_rest.model.dto.RequestDTO;
+import be.technobel.ylorth.reservastock_rest.model.dto.RoomDTO;
 import be.technobel.ylorth.reservastock_rest.model.entity.Request;
 import be.technobel.ylorth.reservastock_rest.model.entity.Role;
 import be.technobel.ylorth.reservastock_rest.model.entity.Room;
@@ -13,6 +14,7 @@ import be.technobel.ylorth.reservastock_rest.repository.RoomRepository;
 import be.technobel.ylorth.reservastock_rest.repository.UserRepository;
 import be.technobel.ylorth.reservastock_rest.service.RequestService;
 import be.technobel.ylorth.reservastock_rest.service.mapper.RequestMapper;
+import be.technobel.ylorth.reservastock_rest.service.mapper.RoomMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -31,14 +33,16 @@ public class RequestServiceImpl implements RequestService {
     private final MaterialRepository materialRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    private final RoomMapper roomMapper;
 
     public RequestServiceImpl(RequestRepository requestRepository, RequestMapper requestMapper, MaterialRepository materialRepository, RoomRepository roomRepository,
-                              UserRepository userRepository) {
+                              UserRepository userRepository, RoomMapper roomMapper) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;
         this.materialRepository = materialRepository;
         this.roomRepository = roomRepository;
         this.userRepository = userRepository;
+        this.roomMapper = roomMapper;
     }
 
     @Override
@@ -206,5 +210,37 @@ public class RequestServiceImpl implements RequestService {
                 .filter(r -> !(entity.getUser().getRoles().contains(Role.STUDENT)&& r.isForStaff()))
                 .collect(Collectors.toSet());
 
+    }
+    public Set<Room> freeCorrespondingRooms(RequestDTO demande){
+
+        Request entity = requestMapper.toEntity(demande);
+
+        //Rooms with same capacity
+
+        Set<Room> correspondingRooms =correspondingRooms(entity);
+
+        //If no room with needed material
+        if(correspondingRooms.size()==0)
+            entity.setRefusalReason("Pas de salles contenant le materiel nécessaire");
+
+        List<Request> requestOfTheDay = requestRepository.findAll().stream()
+                .filter(d -> d.getStartTime().getYear()==entity.getStartTime().getYear())
+                .filter(d -> d.getStartTime().getDayOfYear()==entity.getStartTime().getDayOfYear())
+                .filter(d -> d.getRoom().getCapacity()==entity.getRoom().getCapacity())
+                .filter(d -> d.getAdmin()!=null)
+                .toList();
+
+        Set<RoomDTO> freeCorrespondingRooms = new HashSet<>();
+
+        for (Room room : correspondingRooms) {
+            for (Request acceptedRequest : requestOfTheDay) {
+                if(acceptedRequest.getRoom().getId()!= room.getId() || (acceptedRequest.getStartTime().isAfter(entity.getStartTime().plusMinutes(entity.getMinutes())) || acceptedRequest.getStartTime().plusMinutes(acceptedRequest.getMinutes()).isBefore(entity.getStartTime()))){
+                    freeCorrespondingRooms.add(roomMapper.toDTO(room));
+                }
+            }
+        }
+
+
+        return correspondingRooms;
     }
 }

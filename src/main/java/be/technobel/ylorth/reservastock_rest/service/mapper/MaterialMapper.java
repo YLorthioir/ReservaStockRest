@@ -18,4 +18,14 @@ public class MaterialMapper {
                 .build();
     }
 
+    public Material toEntity(MaterialDTO dto){
+        if(dto==null)
+            return null;
+
+        Material entity = new Material();
+        entity.setName(dto.getName());
+
+        return entity;
+    }
+
 }

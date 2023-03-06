@@ -15,10 +15,14 @@ public class RequestMapper {
 
     private MaterialMapper materialMapper;
     private final MaterialRepository materialRepository;
+    private final RoomRepository roomRepository;
+    private final UserRepository userRepository;
 
-    public RequestMapper(MaterialMapper materialMapper, MaterialRepository materialRepository) {
+    public RequestMapper(MaterialMapper materialMapper, MaterialRepository materialRepository, RoomRepository roomRepository, UserRepository userRepository) {
         this.materialMapper = materialMapper;
         this.materialRepository = materialRepository;
+        this.roomRepository = roomRepository;
+        this.userRepository = userRepository;
     }
 
     public RequestDTO toDTO(Request entity){
@@ -61,5 +65,29 @@ public class RequestMapper {
                 .collect(Collectors.toSet()));
 
         return request;
+    }
+
+
+    public Request toEntity(RequestDTO requestDTO){
+
+        if(requestDTO == null)
+            return null;
+
+        Request entity = new Request();
+
+        entity.setId(requestDTO.getId());
+        entity.setStartTime(requestDTO.getStartTime());
+        entity.setMinutes(requestDTO.getMinutes());
+        entity.setRoom(roomRepository.findById(requestDTO.getRoomId()).get());
+        entity.setAdmin(userRepository.findById(requestDTO.getAdminId()).get());
+        entity.setUser(userRepository.findById(requestDTO.getUserId()).get());
+        entity.setRequestReason(requestDTO.getRequestReason());
+        entity.setRefusalReason(requestDTO.getRefusalReason());
+        entity.setMaterials(requestDTO.getMaterials().stream()
+                .map(dto -> materialMapper.toEntity(dto))
+                .collect(Collectors.toSet())
+        );
+
+        return entity;
     }
 }
