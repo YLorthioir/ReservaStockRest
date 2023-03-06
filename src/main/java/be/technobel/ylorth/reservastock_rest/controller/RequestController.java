@@ -6,6 +6,7 @@ import be.technobel.ylorth.reservastock_rest.model.form.RequestForm;
 import be.technobel.ylorth.reservastock_rest.service.AuthService;
 import be.technobel.ylorth.reservastock_rest.service.RequestService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,7 @@ public class RequestController {
     }
 
     @PostMapping("/add")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
     public void addRequest(@RequestBody @Valid RequestForm form, Authentication authentication){
         requestService.insert(form, authentication);
     }
