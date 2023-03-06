@@ -15,6 +15,8 @@ import be.technobel.ylorth.reservastock_rest.repository.UserRepository;
 import be.technobel.ylorth.reservastock_rest.service.RequestService;
 import be.technobel.ylorth.reservastock_rest.service.mapper.RequestMapper;
 import be.technobel.ylorth.reservastock_rest.service.mapper.RoomMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -109,7 +111,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void update(RequestForm form, Long id) {
+    public void update(RequestForm form, Long id, Authentication authentication) {
         if( form == null )
             throw new IllegalArgumentException("form should not be null");
 
@@ -117,15 +119,13 @@ public class RequestServiceImpl implements RequestService {
         entity.setMaterials(
                 new HashSet<>(materialRepository.findAllById(form.getMaterials()))
         );
-        entity.setUser(userRepository.findById(form.getUser()).get());
+        entity.setUser(userRepository.findByLogin(authentication.getPrincipal().toString()).get());
         entity.setRoom(roomRepository.findById(form.getRoom()).get());
 
         entity.setId(id);
         requestRepository.save(verification(entity));
     }
-
-    @Override
-    public Request verification(Request entity){
+    private Request verification(Request entity){
 
         //List of concordant rooms
 
@@ -140,6 +140,7 @@ public class RequestServiceImpl implements RequestService {
         //if there is no concordant room, set refusal reason
         if(concordantRooms.size()==0)
             entity.setRefusalReason("No room found with the required material");
+
 
         //list of validated request with corresponding room on the request moment
         List<Request> validatedConcordantRoomRequest = new ArrayList<>();
@@ -195,11 +196,11 @@ public class RequestServiceImpl implements RequestService {
             }
         } else if (occupiedRoom.size()== concordantRooms.size()) {
             entity.setRefusalReason("Request cancelled");
+            throw new NotFoundException(entity);
         }
-
         return entity;
     }
-    public Set<Room> correspondingRooms(Request entity){
+    private Set<Room> correspondingRooms(Request entity){
 
         //Rooms with same capacity
         Set<Room> concordantRooms = roomRepository.findAllByCapacity(entity.getRoom().getCapacity());
@@ -211,9 +212,7 @@ public class RequestServiceImpl implements RequestService {
                 .collect(Collectors.toSet());
 
     }
-    public Set<Room> freeCorrespondingRooms(RequestDTO demande){
-
-        Request entity = requestMapper.toEntity(demande);
+    private Set<Room> freeCorrespondingRooms(Request entity){
 
         //Rooms with same capacity
 

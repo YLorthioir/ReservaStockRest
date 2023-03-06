@@ -15,9 +15,7 @@ public interface RequestService {
     List<RequestDTO> getAllByUser(String username);
     RequestDTO getOne(Long id);
     void insert(RequestForm form, Authentication authentication);
-    void update(RequestForm form, Long id);
+    void update(RequestForm form, Long id, Authentication authentication);
     void confirm(ConfirmForm form, Long id);
     void delete(Long id, Authentication authentication);
-    Request verification(Request entity);
-    Set<Room> correspondingRooms(Request entity);
 }

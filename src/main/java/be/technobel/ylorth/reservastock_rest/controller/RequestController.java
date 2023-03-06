@@ -38,7 +38,7 @@ public class RequestController {
     }
 
     @PostMapping("/add")
-    public void addDemande(@RequestBody @Valid RequestForm form, Authentication authentication){
+    public void addRequest(@RequestBody @Valid RequestForm form, Authentication authentication){
         requestService.insert(form, authentication);
     }
 

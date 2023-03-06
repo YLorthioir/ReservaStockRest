@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = OpeningHoursValidator.class)
 public @interface OpeningHours {
 
+    String OpenAt() default "00:00";
+    String CloseAt() default "23:59";
     String message() default "The request must be in the opening hours";
 
     Class<?>[] groups() default { };

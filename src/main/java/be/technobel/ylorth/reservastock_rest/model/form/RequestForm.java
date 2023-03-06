@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-@OpeningHours
+@OpeningHours(OpenAt = "08:00", CloseAt = "18:00")
 public class RequestForm {
     @NotNull(message = "Entrez un créneau")
     private LocalDateTime starTime;
@@ -16,8 +16,6 @@ public class RequestForm {
     private String requestReason;
     @NotNull
     private int minutes;
-    @NotNull
-    private Long user;
     @NotNull
     private Long room;
 
