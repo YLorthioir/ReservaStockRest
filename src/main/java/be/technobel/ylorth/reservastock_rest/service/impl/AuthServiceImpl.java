@@ -96,6 +96,11 @@ public class AuthServiceImpl implements AuthService {
         user.getRoles().add(Role.STUDENT);
         user = userRepository.save( user );
 
+        String texte = " Bonjour,\n" +
+                "votre compte a bien été créé.\n" +
+                "Votre compte est maintenant en attente de validation";
+        emailService.sendMessage(user.getEmail(), "Compte créé", texte);
+
     }
 
     @Override
@@ -129,6 +134,10 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findById(id).get();
         user.setEnabled(true);
         userRepository.save(user);
+        String texte = " Bonjour,\n" +
+                "votre compte a bien été validé.\n" +
+                "Vous pouvez dès lors vous connecter à votre compte";
+        emailService.sendMessage(user.getEmail(), "Compte validé", texte);
     }
 
     @Override
