@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/room")
 public class RoomController {
 
     private final RoomService roomService;
 
-    public RoomController(RoomService roomService, MaterialService materialService, MaterialRepository materialRepository) {
+    public RoomController(RoomService roomService) {
         this.roomService = roomService;
     }
 

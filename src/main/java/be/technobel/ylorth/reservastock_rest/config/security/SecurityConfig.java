@@ -38,7 +38,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(
             registry -> registry
 
-                    .requestMatchers("/auth/login").anonymous()
+  /*                  .requestMatchers("/auth/login").anonymous()
                     .requestMatchers("/auth/studentRegister").anonymous()
                     .requestMatchers("/auth/sendPasswordMail").anonymous()
                     .requestMatchers("/auth/newPassword").anonymous()
@@ -59,7 +59,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET,"/request/allUnconfirmed").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/request/{id:[0-9]+}").authenticated()
                     .requestMatchers(HttpMethod.PATCH,"/request/{id:[0-9]+}/confirm").hasRole("ADMIN")
-                    .requestMatchers("/request/**").authenticated()
+                    .requestMatchers("/request/**").authenticated()*/
 
 
                     .requestMatchers( request -> request.getRequestURI().length() > 500 ).denyAll()
@@ -75,19 +75,6 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
-    }
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:4200","http://localhost:50254")
-                        .allowCredentials(true)
-                        .allowedMethods("GET", "POST", "PUT", "PATCH","DELETE","OPTIONS")
-                        .allowedHeaders("authorization");
-            }
-        };
     }
 
 }

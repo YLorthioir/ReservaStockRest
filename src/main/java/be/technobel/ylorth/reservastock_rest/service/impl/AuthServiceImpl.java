@@ -110,6 +110,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthDTO login(LoginForm form) {
+        System.out.println("Service:"+ form);
         authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(form.getLogin(),form.getPassword()) );
 
         User user = userRepository.findByLogin(form.getLogin() )
