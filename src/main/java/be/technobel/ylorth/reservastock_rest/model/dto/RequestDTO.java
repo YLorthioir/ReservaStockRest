@@ -15,11 +15,11 @@ public class RequestDTO {
     private String refusalReason;
     private int minutes;
 
-    private Long userId;
+    private UserDTO userDTO;
 
     private Long adminId;
 
-    private Long roomId;
+    private RoomDTO roomDTO;
 
     private Set<MaterialDTO> materials;
 

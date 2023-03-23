@@ -9,11 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserMapper {
 
-    RequestMapper requestMapper;
     AdressMapper adressMapper;
 
-    public UserMapper(RequestMapper requestMapper, AdressMapper adressMapper) {
-        this.requestMapper = requestMapper;
+    public UserMapper(AdressMapper adressMapper) {
         this.adressMapper = adressMapper;
     }
 

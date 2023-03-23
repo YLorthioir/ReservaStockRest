@@ -20,8 +20,8 @@ public class OpeningHoursValidator implements ConstraintValidator<OpeningHours, 
 
     @Override
     public boolean isValid(RequestForm value, ConstraintValidatorContext context) {
-        if(value.getStarTime()!=null)
-            return (value.getStarTime().toLocalTime().isAfter(opening) && value.getStarTime().plusMinutes(value.getMinutes()).toLocalTime().isBefore(closing));
+        if(value.getStartTime()!=null)
+            return (value.getStartTime().toLocalTime().isAfter(opening) && value.getStartTime().plusMinutes(value.getMinutes()).toLocalTime().isBefore(closing));
         else
             return false;
     }

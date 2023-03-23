@@ -25,7 +25,6 @@ public class AuthController {
     public AuthDTO login(@RequestBody @Valid LoginForm form){
         return authService.login(form);
     }
-
     @PostMapping("/register")
     public void register(@RequestBody @Valid RegisterForm form){
         authService.register(form);
@@ -34,7 +33,6 @@ public class AuthController {
     public void registerStudent(@RequestBody @Valid RegisterForm form){
         authService.registerStudent(form);
     }
-
     @GetMapping("/toValidate")
     public List<UserDTO> toValidate(){
         return authService.getAllUnvalidate();
@@ -47,7 +45,7 @@ public class AuthController {
     public void unValidate(@PathVariable long id){
         authService.unValidate(id);
     }
-    @PostMapping("/sendPassword")
+    @PostMapping("/sendNewPasswordRequest")
     public void sendPasswordMail(@RequestBody @Valid LoginForm form){
         authService.sendPasswordMail(form.getLogin());
     }

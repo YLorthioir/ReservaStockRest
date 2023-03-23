@@ -11,11 +11,9 @@ import java.util.stream.Collectors;
 public class RoomMapper {
 
     MaterialMapper materialMapper;
-    RequestMapper requestMapper;
 
-    public RoomMapper(MaterialMapper materialMapper, RequestMapper requestMapper) {
+    public RoomMapper(MaterialMapper materialMapper) {
         this.materialMapper = materialMapper;
-        this.requestMapper = requestMapper;
     }
 
     public RoomDTO toDTO(Room entity){

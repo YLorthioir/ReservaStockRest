@@ -11,7 +11,6 @@ public class ConfirmForm {
 
     private String refusalReason;
     private boolean valid;
-    private Long admin;
     private Long room;
 
 

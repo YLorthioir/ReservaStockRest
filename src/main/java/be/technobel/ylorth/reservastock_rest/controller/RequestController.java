@@ -1,6 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.controller;
 
 import be.technobel.ylorth.reservastock_rest.model.dto.RequestDTO;
+import be.technobel.ylorth.reservastock_rest.model.dto.RoomDTO;
 import be.technobel.ylorth.reservastock_rest.model.form.ConfirmForm;
 import be.technobel.ylorth.reservastock_rest.model.form.RequestForm;
 import be.technobel.ylorth.reservastock_rest.service.AuthService;
@@ -49,16 +50,19 @@ public class RequestController {
     @PatchMapping("/{id:[0-9]+}/confirm")
     public void processConfirmForm(@PathVariable Long id,@RequestBody @Valid ConfirmForm form, Authentication authentication){
         if(form.isValid()) {
-            form.setAdmin(authService.findByLogin(authentication.getPrincipal().toString()));
             form.setRefusalReason(null);
-        }else{
-            form.setAdmin(null);
         }
-        requestService.confirm(form, id);
+        String login = authentication.getPrincipal().toString();
+        requestService.confirm(form, id, login);
     }
 
     @DeleteMapping("/{id:[0-9]+}")
     public void delete(@PathVariable long id, Authentication authentication){
         requestService.delete(id, authentication);
+    }
+
+    @GetMapping("/freeRooms/{id:[0-9]+}")
+    public List<RoomDTO> getAllFreeRoom(@PathVariable Long id){
+        return requestService.freeCorrespondingRooms(id);
     }
 }

@@ -15,8 +15,7 @@ import be.technobel.ylorth.reservastock_rest.repository.UserRepository;
 import be.technobel.ylorth.reservastock_rest.service.RequestService;
 import be.technobel.ylorth.reservastock_rest.service.mapper.RequestMapper;
 import be.technobel.ylorth.reservastock_rest.service.mapper.RoomMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import be.technobel.ylorth.reservastock_rest.service.mapper.UserMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -35,15 +34,17 @@ public class RequestServiceImpl implements RequestService {
     private final MaterialRepository materialRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private final RoomMapper roomMapper;
 
     public RequestServiceImpl(RequestRepository requestRepository, RequestMapper requestMapper, MaterialRepository materialRepository, RoomRepository roomRepository,
-                              UserRepository userRepository, RoomMapper roomMapper) {
+                              UserRepository userRepository, UserMapper userMapper, RoomMapper roomMapper) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;
         this.materialRepository = materialRepository;
         this.roomRepository = roomRepository;
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
         this.roomMapper = roomMapper;
     }
 
@@ -57,7 +58,7 @@ public class RequestServiceImpl implements RequestService {
     public List<RequestDTO> getAllByUser(String username){
         return requestRepository.findAll().stream()
                 .map(requestMapper::toDTO)
-                .filter(d -> d.getUserId()==userRepository.findByLogin(username).get().getId())
+                .filter(d -> d.getUserDTO().equals( userMapper.toUserDTO(userRepository.findByLogin(username).get())))
                 .toList();
     }
 
@@ -85,14 +86,17 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void confirm(ConfirmForm form, Long id) {
+    public void confirm(ConfirmForm form, Long id, String login) {
         Request entity = requestRepository.findById(id).get();
+
+        if(form.getRoom()==null)
+            form.setRoom(entity.getRoom().getId());
 
         entity.setRoom(roomRepository.findById(form.getRoom()).get());
         entity = verification(entity);
 
         if(form.isValid() && entity.getRefusalReason()==null)
-            entity.setAdmin(userRepository.findById(form.getAdmin()).get());
+            entity.setAdmin(userRepository.findByLogin(login).get());
         else if(entity.getRefusalReason()==null)
             entity.setRefusalReason(form.getRefusalReason());
 
@@ -114,6 +118,9 @@ public class RequestServiceImpl implements RequestService {
     public void update(RequestForm form, Long id, Authentication authentication) {
         if( form == null )
             throw new IllegalArgumentException("form should not be null");
+
+        if( !requestRepository.findById(id).get().getUser().getLogin().equals(authentication.getPrincipal().toString()) )
+            throw new IllegalArgumentException("not allowed to update this request");
 
         Request entity = requestMapper.requestToEntity(form);
         entity.setMaterials(
@@ -212,8 +219,9 @@ public class RequestServiceImpl implements RequestService {
                 .collect(Collectors.toSet());
 
     }
-    private Set<Room> freeCorrespondingRooms(Request entity){
+    public List<RoomDTO> freeCorrespondingRooms(Long id){
 
+        Request entity = requestRepository.findById(id).get();
         //Rooms with same capacity
 
         Set<Room> correspondingRooms =correspondingRooms(entity);
@@ -239,7 +247,8 @@ public class RequestServiceImpl implements RequestService {
             }
         }
 
-
-        return correspondingRooms;
+        return correspondingRooms.stream()
+                .map( room -> roomMapper.toDTO(room))
+                .collect(Collectors.toList());
     }
 }

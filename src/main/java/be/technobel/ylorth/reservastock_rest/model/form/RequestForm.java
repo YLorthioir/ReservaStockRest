@@ -11,7 +11,7 @@ import java.util.Set;
 @OpeningHours(OpenAt = "08:00", CloseAt = "18:00")
 public class RequestForm {
     @NotNull(message = "Entrez un créneau")
-    private LocalDateTime starTime;
+    private LocalDateTime startTime;
     @NotNull
     private String requestReason;
     @NotNull

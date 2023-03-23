@@ -14,12 +14,16 @@ import java.util.stream.Collectors;
 public class RequestMapper {
 
     private MaterialMapper materialMapper;
+    private final UserMapper userMapper;
+    private final RoomMapper roomMapper;
     private final MaterialRepository materialRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
 
-    public RequestMapper(MaterialMapper materialMapper, MaterialRepository materialRepository, RoomRepository roomRepository, UserRepository userRepository) {
+    public RequestMapper(MaterialMapper materialMapper, UserMapper userMapper, RoomMapper roomMapper, MaterialRepository materialRepository, RoomRepository roomRepository, UserRepository userRepository) {
         this.materialMapper = materialMapper;
+        this.userMapper = userMapper;
+        this.roomMapper = roomMapper;
         this.materialRepository = materialRepository;
         this.roomRepository = roomRepository;
         this.userRepository = userRepository;
@@ -38,9 +42,9 @@ public class RequestMapper {
                 .id(entity.getId())
                 .startTime(entity.getStartTime())
                 .minutes(entity.getMinutes())
-                .roomId(entity.getRoom().getId())
+                .roomDTO(roomMapper.toDTO(entity.getRoom()))
                 .adminId(adminId)
-                .userId(entity.getUser().getId())
+                .userDTO(userMapper.toUserDTO(entity.getUser()))
                 .requestReason(entity.getRequestReason())
                 .refusalReason(entity.getRefusalReason())
                 .materials(
@@ -57,7 +61,7 @@ public class RequestMapper {
 
         Request request = new Request();
 
-        request.setStartTime(form.getStarTime());
+        request.setStartTime(form.getStartTime());
         request.setRequestReason(form.getRequestReason());
         request.setMinutes(form.getMinutes());
         request.setMaterials(form.getMaterials().stream()
@@ -78,9 +82,9 @@ public class RequestMapper {
         entity.setId(requestDTO.getId());
         entity.setStartTime(requestDTO.getStartTime());
         entity.setMinutes(requestDTO.getMinutes());
-        entity.setRoom(roomRepository.findById(requestDTO.getRoomId()).get());
+        entity.setRoom(roomRepository.findById(requestDTO.getRoomDTO().getId()).get());
         entity.setAdmin(userRepository.findById(requestDTO.getAdminId()).get());
-        entity.setUser(userRepository.findById(requestDTO.getUserId()).get());
+        entity.setUser(userRepository.findById(requestDTO.getUserDTO().getId()).get());
         entity.setRequestReason(requestDTO.getRequestReason());
         entity.setRefusalReason(requestDTO.getRefusalReason());
         entity.setMaterials(requestDTO.getMaterials().stream()
