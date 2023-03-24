@@ -42,18 +42,17 @@ public class RequestController {
     }
 
     @PostMapping("/add")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public void addRequest(@RequestBody @Valid RequestForm form, Authentication authentication){
-        requestService.insert(form, authentication);
+    public HttpStatus addRequest(@RequestBody @Valid RequestForm form, Authentication authentication){
+        return requestService.insert(form, authentication);
     }
 
     @PatchMapping("/{id:[0-9]+}/confirm")
-    public void processConfirmForm(@PathVariable Long id,@RequestBody @Valid ConfirmForm form, Authentication authentication){
+    public HttpStatus processConfirmForm(@PathVariable Long id,@RequestBody @Valid ConfirmForm form, Authentication authentication){
         if(form.isValid()) {
             form.setRefusalReason(null);
         }
         String login = authentication.getPrincipal().toString();
-        requestService.confirm(form, id, login);
+        return requestService.confirm(form, id, login);
     }
 
     @DeleteMapping("/{id:[0-9]+}")

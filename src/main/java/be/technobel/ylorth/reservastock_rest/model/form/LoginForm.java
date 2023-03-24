@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class LoginForm {
     @NotNull
-    @Size(min = 4, max = 40)
+    @Size(max = 40)
     private String login;
     @NotNull
     @Size(min = 4, max = 40)

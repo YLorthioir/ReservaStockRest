@@ -6,6 +6,7 @@ import be.technobel.ylorth.reservastock_rest.model.entity.Material;
 import be.technobel.ylorth.reservastock_rest.repository.MaterialRepository;
 import be.technobel.ylorth.reservastock_rest.service.MaterialService;
 import be.technobel.ylorth.reservastock_rest.service.mapper.MaterialMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,10 +44,17 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public void delete(long id) {
+    public HttpStatus delete(long id) {
         if( !materialRepository.existsById(id) )
             throw new NotFoundException("Material not found");
-
-        materialRepository.deleteById(id);
+        try{
+            materialRepository.deleteById(id);
+            return HttpStatus.CREATED;
+        } catch(Exception e){
+            if(e.getClass().toString().equals("class org.springframework.dao.DataIntegrityViolationException"))
+                return HttpStatus.BAD_REQUEST;
+            else
+                return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
 }

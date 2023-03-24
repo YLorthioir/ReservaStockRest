@@ -69,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
 
         User user = userMapper.toEntity(form, adress);
 
-        String login = form.getLastname().substring(0,3).concat(form.getFirstname().substring(0,3)).concat(String.valueOf(form.getBirthdate().getDayOfYear()));
+        String login = form.getLastName().substring(0,3).concat(form.getFirstName().substring(0,3)).concat(String.valueOf(form.getBirthdate().getDayOfYear()));
 
         user.setEnabled(true);
         user.setLogin(login);
@@ -89,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
 
         User user = userMapper.toEntity(form, adress);
 
-        String login = form.getLastname().substring(0,3).concat(form.getFirstname().substring(0,3)).concat(String.valueOf(form.getBirthdate().getDayOfYear()));
+        String login = form.getLastName().substring(0,3).concat(form.getFirstName().substring(0,3)).concat(String.valueOf(form.getBirthdate().getDayOfYear()));
 
         user.setLogin(login);
         user.setPassword( passwordEncoder.encode(form.getPassword()) );
@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
         String texte = " Bonjour,\n" +
                 "votre compte a bien été créé.\n" +
                 "Votre compte est maintenant en attente de validation";
-        emailService.sendMessage(user.getEmail(), "Compte créé", texte);
+        //emailService.sendMessage(user.getEmail(), "Compte créé", texte);
 
     }
 
@@ -166,7 +166,7 @@ public class AuthServiceImpl implements AuthService {
                 "Veuillez vous rendre ici pour changer de mot de passe: http://localhost:8080/swagger \n" +
                 "Si vous n'avez pas fait cette demande, veuillez ignorer ce mail";
 
-        emailService.sendMessage(user.getEmail(), "reset mot de passe", texte);
+        //emailService.sendMessage(user.getEmail(), "reset mot de passe", texte);
 
         ResetValidator resetValidator = new ResetValidator();
         resetValidator.setResetTime(LocalDateTime.now());

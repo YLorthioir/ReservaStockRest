@@ -16,6 +16,7 @@ import be.technobel.ylorth.reservastock_rest.service.RequestService;
 import be.technobel.ylorth.reservastock_rest.service.mapper.RequestMapper;
 import be.technobel.ylorth.reservastock_rest.service.mapper.RoomMapper;
 import be.technobel.ylorth.reservastock_rest.service.mapper.UserMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -70,7 +71,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void insert(RequestForm form, Authentication authentication) {
+    public HttpStatus insert(RequestForm form, Authentication authentication) {
         if( form == null )
             throw new IllegalArgumentException("form should not be null");
 
@@ -81,12 +82,17 @@ public class RequestServiceImpl implements RequestService {
         entity.setUser(userRepository.findByLogin(authentication.getPrincipal().toString()).get());
         entity.setRoom(roomRepository.findById(form.getRoom()).get());
 
-        requestRepository.save(verification(entity));
+        entity=verification(entity);
+        requestRepository.save(entity);
 
+        if(entity.getRefusalReason()==null)
+            return HttpStatus.CREATED;
+        else
+            return HttpStatus.ACCEPTED;
     }
 
     @Override
-    public void confirm(ConfirmForm form, Long id, String login) {
+    public HttpStatus confirm(ConfirmForm form, Long id, String login) {
         Request entity = requestRepository.findById(id).get();
 
         if(form.getRoom()==null)
@@ -103,6 +109,11 @@ public class RequestServiceImpl implements RequestService {
         entity.setRoom(roomRepository.findById(form.getRoom()).get());
 
         requestRepository.save(entity);
+
+        if(entity.getRefusalReason()==null)
+            return HttpStatus.CREATED;
+        else
+            return HttpStatus.ACCEPTED;
     }
 
     @Override
@@ -202,8 +213,7 @@ public class RequestServiceImpl implements RequestService {
                 }
             }
         } else if (occupiedRoom.size()== concordantRooms.size()) {
-            entity.setRefusalReason("Request cancelled");
-            throw new NotFoundException(entity);
+            entity.setRefusalReason("No room available found!");
         }
         return entity;
     }

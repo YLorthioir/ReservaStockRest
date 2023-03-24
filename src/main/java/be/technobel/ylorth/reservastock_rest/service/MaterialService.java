@@ -4,6 +4,7 @@ package be.technobel.ylorth.reservastock_rest.service;
 
 
 import be.technobel.ylorth.reservastock_rest.model.dto.MaterialDTO;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -12,6 +13,6 @@ public interface MaterialService {
     MaterialDTO getOne(Long id);
     void insert(String nom);
 
-    void delete(long id);
+    HttpStatus delete(long id);
 
 }

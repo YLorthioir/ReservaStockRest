@@ -36,8 +36,7 @@ public class MaterialController {
     }
 
     @DeleteMapping("/{id:[0-9]+}")
-    public void delete(@PathVariable long id){
-        materialService.delete(id);
+    public HttpStatus delete(@PathVariable long id) {
+        return materialService.delete(id);
     }
-
 }

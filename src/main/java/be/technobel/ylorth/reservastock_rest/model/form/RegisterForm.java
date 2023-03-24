@@ -15,10 +15,10 @@ import java.util.Set;
 public class RegisterForm {
     @NotNull
     @Size(min = 4, max = 40)
-    private String lastname;
+    private String lastName;
     @NotNull
     @Size(min = 4, max = 40)
-    private String firstname;
+    private String firstName;
     @NotNull
     @Size(min = 4, max = 40)
     private String password;

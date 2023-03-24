@@ -42,8 +42,8 @@ public class UserMapper {
         User user = new User();
 
         user.setAdress(adress);
-        user.setLastname(form.getLastname());
-        user.setFirstname(form.getFirstname());
+        user.setLastname(form.getLastName());
+        user.setFirstname(form.getFirstName());
         user.setPassword(form.getPassword());
         user.setEmail(form.getEmail());
         user.setPhone(form.getPhone());

@@ -6,6 +6,7 @@ import be.technobel.ylorth.reservastock_rest.model.form.LoginForm;
 import be.technobel.ylorth.reservastock_rest.model.form.RegisterForm;
 import be.technobel.ylorth.reservastock_rest.service.AuthService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +27,12 @@ public class AuthController {
         return authService.login(form);
     }
     @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
     public void register(@RequestBody @Valid RegisterForm form){
         authService.register(form);
     }
     @PostMapping("/studentRegister")
+    @ResponseStatus(HttpStatus.CREATED)
     public void registerStudent(@RequestBody @Valid RegisterForm form){
         authService.registerStudent(form);
     }
@@ -46,10 +49,12 @@ public class AuthController {
         authService.unValidate(id);
     }
     @PostMapping("/sendNewPasswordRequest")
-    public void sendPasswordMail(@RequestBody @Valid LoginForm form){
-        authService.sendPasswordMail(form.getLogin());
+    @ResponseStatus(HttpStatus.CREATED)
+    public void sendPasswordMail(@RequestBody @Valid String login){
+        authService.sendPasswordMail(login);
     }
     @PostMapping("/newPassword")
+    @ResponseStatus(HttpStatus.CREATED)
     public void newPassword(@RequestBody String password, @RequestParam String email){
         authService.resetPassword(password, email);
     }
