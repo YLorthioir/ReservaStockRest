@@ -7,6 +7,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -50,6 +51,16 @@ public class RegisterForm {
     private String country;
     @Past
     private LocalDate birthdate;
-    private Set<Role> roles;
+    private String role;
 
+    public Set<Role> getRoles() {
+        Set<Role> roles = new HashSet<>();
+        if (role.equals("ADMIN"))
+            roles.add(Role.ADMIN);
+        if(role.equals("PROFESSOR"))
+            roles.add(Role.PROFESSOR);
+        if(role.equals("STUDENT"))
+            roles.add(Role.STUDENT);
+        return roles;
+    }
 }

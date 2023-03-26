@@ -38,14 +38,14 @@ public class SecurityConfig {
         http.authorizeHttpRequests(
             registry -> registry
 
-                    .requestMatchers("/auth/login").anonymous()
-                    .requestMatchers("/auth/studentRegister").anonymous()
-                    .requestMatchers("/auth/sendPasswordMail").anonymous()
-                    .requestMatchers("/auth/newPassword").anonymous()
-                    .requestMatchers("/auth/register").hasRole("ADMIN")
-                    .requestMatchers("/auth/toValidate").hasRole("ADMIN")
-                    .requestMatchers("/auth/validate/{id:[0-9]+}").hasRole("ADMIN")
-                    .requestMatchers("/auth/unValidate/{id:[0-9]+}").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST,"/auth/login").anonymous()
+                    .requestMatchers(HttpMethod.POST,"/auth/studentRegister").anonymous()
+                    .requestMatchers(HttpMethod.POST,"/auth/sendPasswordMail").anonymous()
+                    .requestMatchers(HttpMethod.POST,"/auth/newPassword").anonymous()
+                    .requestMatchers(HttpMethod.POST,"/auth/register").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET,"/auth/toValidate").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST,"/auth/validate/{id:[0-9]+}").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST,"/auth/unValidate/{id:[0-9]+}").hasRole("ADMIN")
 
 
                     .requestMatchers(HttpMethod.POST, "/room/**").hasRole("ADMIN")
