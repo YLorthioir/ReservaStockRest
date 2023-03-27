@@ -23,8 +23,8 @@ public class UserMapper {
 
         return UserDTO.builder()
                 .id(entity.getId())
-                .lastname(entity.getLastname())
-                .firstname(entity.getFirstname())
+                .lastName(entity.getLastName())
+                .firstName(entity.getFirstName())
                 .login(entity.getLogin())
                 .roles(entity.getRoles())
                 .adress(adressMapper.toDTO(entity.getAdress()))
@@ -42,8 +42,8 @@ public class UserMapper {
         User user = new User();
 
         user.setAdress(adress);
-        user.setLastname(form.getLastName());
-        user.setFirstname(form.getFirstName());
+        user.setLastName(form.getLastName());
+        user.setFirstName(form.getFirstName());
         user.setPassword(form.getPassword());
         user.setEmail(form.getEmail());
         user.setPhone(form.getPhone());
