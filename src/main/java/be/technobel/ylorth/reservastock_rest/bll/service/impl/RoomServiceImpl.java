@@ -56,6 +56,7 @@ public class RoomServiceImpl implements RoomService {
 
         entity.setName(form.getName());
         entity.setCapacity(form.getCapacity());
+        entity.setForStaff(form.isForStaff());
         entity.setContains(
                 new HashSet<>(materialRepository.findAllById(form.getContains()))
         );
