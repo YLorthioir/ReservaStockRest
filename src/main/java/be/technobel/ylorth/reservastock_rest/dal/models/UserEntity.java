@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 @Entity
 @Getter @Setter
-@Table(name = "`User`")
-public class User implements UserDetails {
+@Table(name = "\"User\"")
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private String phone;
     @ManyToOne
     @JoinColumn(name = "adress_id")
-    private Adress adress;
+    private AdressEntity adressEntity;
 
     @Column(nullable = false)
     private LocalDate birthdate;
@@ -45,8 +45,8 @@ public class User implements UserDetails {
     private Set<Role> roles = new LinkedHashSet<>();
     @Column(nullable = false)
     private boolean enabled;
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private Set<Request> requests = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "userEntity", orphanRemoval = true)
+    private Set<RequestEntity> requestEntities = new LinkedHashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

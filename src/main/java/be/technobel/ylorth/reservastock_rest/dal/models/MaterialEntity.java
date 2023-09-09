@@ -7,10 +7,10 @@ import lombok.Setter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Entity
+@Entity(name = "Material")
 @Getter
 @Setter
-public class Material {
+public class MaterialEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "material_id", nullable = false, unique = true)
@@ -19,6 +19,6 @@ public class Material {
     private String name;
 
     @ManyToMany(mappedBy = "contains")
-    private Set<Room> rooms = new LinkedHashSet<>();
+    private Set<RoomEntity> roomEntities = new LinkedHashSet<>();
 
 }

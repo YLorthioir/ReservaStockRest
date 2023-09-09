@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class ErrorDTO {
+public class Error {
 
     private String message;
     private HttpStatus status;

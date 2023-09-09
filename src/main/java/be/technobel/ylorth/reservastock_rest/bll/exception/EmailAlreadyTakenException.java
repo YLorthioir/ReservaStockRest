@@ -1,4 +1,4 @@
-package be.technobel.ylorth.reservastock_rest.exception;
+package be.technobel.ylorth.reservastock_rest.bll.exception;
 
 public class EmailAlreadyTakenException extends RuntimeException {
 

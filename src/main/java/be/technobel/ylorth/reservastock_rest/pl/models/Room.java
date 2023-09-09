@@ -1,6 +1,6 @@
 package be.technobel.ylorth.reservastock_rest.pl.models;
 
-import be.technobel.ylorth.reservastock_rest.dal.models.Room;
+import be.technobel.ylorth.reservastock_rest.dal.models.RoomEntity;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,26 +9,26 @@ import java.util.stream.Collectors;
 
 @Data
 @Builder
-public class RoomDTO {
+public class Room {
     private long id;
     private int capacity;
     private String name;
     private boolean forStaff;
-    private Set<MaterialDTO> contains;
+    private Set<Material> contains;
 
-    public static RoomDTO fromBLL(Room entity){
+    public static Room fromBLL(RoomEntity entity){
 
         if(entity == null)
             return null;
 
-        return RoomDTO.builder()
+        return Room.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .forStaff(entity.isForStaff())
                 .capacity(entity.getCapacity())
                 .contains(
                         entity.getContains().stream()
-                                .map(MaterialDTO::fromBLL)
+                                .map(Material::fromBLL)
                                 .collect(Collectors.toSet())
                 )
 

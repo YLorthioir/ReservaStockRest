@@ -1,7 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.pl.controller;
 
-import be.technobel.ylorth.reservastock_rest.pl.models.ErrorDTO;
-import be.technobel.ylorth.reservastock_rest.exception.NotFoundException;
+import be.technobel.ylorth.reservastock_rest.pl.models.Error;
+import be.technobel.ylorth.reservastock_rest.bll.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 public class ControllerAdvisor {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorDTO> handleResourceNotFound(NotFoundException ex, HttpServletRequest req){
+    public ResponseEntity<Error> handleResourceNotFound(NotFoundException ex, HttpServletRequest req){
 
-        ErrorDTO errorDTO = ErrorDTO.builder()
+        Error error = Error.builder()
                 .status( HttpStatus.NOT_FOUND )
                 .message( ex.getMessage() )
                 .requestMadeAt( LocalDateTime.now() )
@@ -28,10 +28,10 @@ public class ControllerAdvisor {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType( MediaType.APPLICATION_JSON );
 
-//        return new ResponseEntity<>(errorDTO, headers, HttpStatus.NOT_FOUND);
+//        return new ResponseEntity<>(error, headers, HttpStatus.NOT_FOUND);
         return ResponseEntity.status( HttpStatus.NOT_FOUND )
                 .headers( headers )
-                .body( errorDTO );
+                .body(error);
 
     }
 

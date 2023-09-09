@@ -1,7 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.pl;
 
 
-import be.technobel.ylorth.reservastock_rest.dal.models.User;
+import be.technobel.ylorth.reservastock_rest.dal.models.UserEntity;
 import be.technobel.ylorth.reservastock_rest.dal.models.Role;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -65,17 +65,17 @@ public class JwtProvider {
                     .build()
                     .verify( token );
 
-            // 3, généré a partir d'un user existant
+            // 3, généré a partir d'un userEntity existant
             String username = jwt.getSubject();
-            User user = (User) userDetailsService.loadUserByUsername(username);
-            if( !user.isEnabled() )
+            UserEntity userEntity = (UserEntity) userDetailsService.loadUserByUsername(username);
+            if( !userEntity.isEnabled() )
                 return false;
 
             // (4, Les roles ne sont plus bon) Verifier les roles n'est pas conventionnel
             List<Role> tokenRoles = jwt.getClaim("roles")
                     .asList(Role.class);
 
-            return user.getRoles().containsAll( tokenRoles );
+            return userEntity.getRoles().containsAll( tokenRoles );
         }
         catch (JWTVerificationException | UsernameNotFoundException ex ){
             return false;

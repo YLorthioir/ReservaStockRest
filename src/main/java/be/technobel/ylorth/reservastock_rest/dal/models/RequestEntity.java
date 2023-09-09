@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Entity
+@Entity(name = "Request")
 @Getter
 @Setter
-public class Request {
+public class RequestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,20 +25,20 @@ public class Request {
     private String refusalReason;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity userEntity;
 
     @OneToOne
     @JoinColumn(name = "admin_id")
-    private User admin;
+    private UserEntity admin;
 
     @ManyToOne
     @JoinColumn(name = "room_id")
-    private Room room;
+    private RoomEntity roomEntity;
 
     @ManyToMany
     @JoinTable(name = "requested_materials",
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "material_id"))
-    private Set<Material> materials = new LinkedHashSet<>();
+    private Set<MaterialEntity> materialEntities = new LinkedHashSet<>();
 
 }

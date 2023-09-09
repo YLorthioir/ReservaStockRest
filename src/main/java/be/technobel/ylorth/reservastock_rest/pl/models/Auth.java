@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 @Builder
-public class AuthDTO {
+public class Auth {
 
     private String token;
     private String login;

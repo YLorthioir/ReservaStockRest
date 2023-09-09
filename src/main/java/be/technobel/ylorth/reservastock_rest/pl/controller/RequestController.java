@@ -1,7 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.pl.controller;
 
-import be.technobel.ylorth.reservastock_rest.pl.models.RequestDTO;
-import be.technobel.ylorth.reservastock_rest.pl.models.RoomDTO;
+import be.technobel.ylorth.reservastock_rest.pl.models.Request;
+import be.technobel.ylorth.reservastock_rest.pl.models.Room;
 import be.technobel.ylorth.reservastock_rest.pl.models.ConfirmForm;
 import be.technobel.ylorth.reservastock_rest.pl.models.RequestForm;
 import be.technobel.ylorth.reservastock_rest.bll.service.AuthService;
@@ -27,18 +27,18 @@ public class RequestController {
     }
 
     @GetMapping("/allUnconfirmed")
-    public List<RequestDTO> getAllUnconfirmed(){
-        return requestService.getAllUnconfirmed().stream().map(RequestDTO::fromBLL).toList();
+    public List<Request> getAllUnconfirmed(){
+        return requestService.getAllUnconfirmed().stream().map(Request::fromBLL).toList();
     }
 
     @GetMapping("/{id:[0-9]+}")
-    public RequestDTO getOne(@PathVariable long id){
-        return RequestDTO.fromBLL(requestService.getOne(id));
+    public Request getOne(@PathVariable long id){
+        return Request.fromBLL(requestService.getOne(id));
     }
 
     @GetMapping("/all")
-    public List<RequestDTO> getAllByUser(Authentication authentication){
-        return requestService.getAllByUser(authentication.getPrincipal().toString()).stream().map(RequestDTO::fromBLL).toList();
+    public List<Request> getAllByUser(Authentication authentication){
+        return requestService.getAllByUser(authentication.getPrincipal().toString()).stream().map(Request::fromBLL).toList();
     }
 
     @PostMapping("/add")
@@ -61,7 +61,7 @@ public class RequestController {
     }
 
     @GetMapping("/freeRooms/{id:[0-9]+}")
-    public List<RoomDTO> getAllFreeRoom(@PathVariable Long id){
-        return requestService.freeCorrespondingRooms(id).stream().map(RoomDTO::fromBLL).toList();
+    public List<Room> getAllFreeRoom(@PathVariable Long id){
+        return requestService.freeCorrespondingRooms(id).stream().map(Room::fromBLL).toList();
     }
 }

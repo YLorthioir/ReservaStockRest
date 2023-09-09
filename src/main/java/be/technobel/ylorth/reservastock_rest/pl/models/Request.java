@@ -1,6 +1,6 @@
 package be.technobel.ylorth.reservastock_rest.pl.models;
 
-import be.technobel.ylorth.reservastock_rest.dal.models.Request;
+import be.technobel.ylorth.reservastock_rest.dal.models.RequestEntity;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Builder
-public class RequestDTO {
+public class Request {
     private long id;
     private LocalDateTime startTime;
     private String requestReason;
@@ -21,11 +21,11 @@ public class RequestDTO {
 
     private Long adminId;
 
-    private RoomDTO roomDTO;
+    private Room room;
 
-    private Set<MaterialDTO> materials;
+    private Set<Material> materials;
 
-    public static RequestDTO fromBLL(Request entity){
+    public static Request fromBLL(RequestEntity entity){
 
         if(entity == null)
             return null;
@@ -34,18 +34,18 @@ public class RequestDTO {
         if(entity.getAdmin()!=null)
             adminId=entity.getAdmin().getId();
 
-        return RequestDTO.builder()
+        return Request.builder()
                 .id(entity.getId())
                 .startTime(entity.getStartTime())
                 .minutes(entity.getMinutes())
-                .roomDTO(RoomDTO.fromBLL(entity.getRoom()))
+                .room(Room.fromBLL(entity.getRoomEntity()))
                 .adminId(adminId)
-                .userDTO(UserDTO.fromBLL(entity.getUser()))
+                .userDTO(UserDTO.fromBLL(entity.getUserEntity()))
                 .requestReason(entity.getRequestReason())
                 .refusalReason(entity.getRefusalReason())
                 .materials(
-                        entity.getMaterials().stream()
-                                .map(MaterialDTO::fromBLL)
+                        entity.getMaterialEntities().stream()
+                                .map(Material::fromBLL)
                                 .collect(Collectors.toSet()))
                 .build();
     }

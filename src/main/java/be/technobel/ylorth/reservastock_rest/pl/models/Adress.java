@@ -1,12 +1,12 @@
 package be.technobel.ylorth.reservastock_rest.pl.models;
 
-import be.technobel.ylorth.reservastock_rest.dal.models.Adress;
+import be.technobel.ylorth.reservastock_rest.dal.models.AdressEntity;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class AdressDTO {
+public class Adress {
 
     private Long id;
     private String number;
@@ -15,12 +15,12 @@ public class AdressDTO {
     private String city;
     private String country;
 
-    public static AdressDTO fromBLL(Adress entity){
+    public static Adress fromBLL(AdressEntity entity){
 
         if(entity == null)
             return null;
 
-        return AdressDTO.builder()
+        return Adress.builder()
                 .id(entity.getId())
                 .number(entity.getNumber())
                 .street(entity.getStreet())

@@ -1,6 +1,6 @@
 package be.technobel.ylorth.reservastock_rest.pl.controller;
 
-import be.technobel.ylorth.reservastock_rest.pl.models.MaterialDTO;
+import be.technobel.ylorth.reservastock_rest.pl.models.Material;
 import be.technobel.ylorth.reservastock_rest.bll.service.MaterialService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,13 +21,13 @@ public class MaterialController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<MaterialDTO>> getAll(){
-        return ResponseEntity.ok(materialService.getAll().stream().map(MaterialDTO::fromBLL).toList());
+    public ResponseEntity<List<Material>> getAll(){
+        return ResponseEntity.ok(materialService.getAll().stream().map(Material::fromBLL).toList());
     }
 
     @GetMapping("/{id:[0-9]+}")
-    public MaterialDTO getOne(@PathVariable long id){
-        return MaterialDTO.fromBLL(materialService.getOne(id));
+    public Material getOne(@PathVariable long id){
+        return Material.fromBLL(materialService.getOne(id));
     }
 
     @PostMapping("/add")

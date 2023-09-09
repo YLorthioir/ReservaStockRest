@@ -6,10 +6,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name = "ResetValidator")
 @Getter
 @Setter
-public class ResetValidator {
+public class ResetValidatorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "resetValidator_id", nullable = false, unique = true)

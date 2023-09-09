@@ -1,10 +1,10 @@
 package be.technobel.ylorth.reservastock_rest.bll.service.impl;
 
 import be.technobel.ylorth.reservastock_rest.bll.service.RequestService;
-import be.technobel.ylorth.reservastock_rest.exception.NotFoundException;
-import be.technobel.ylorth.reservastock_rest.dal.models.Request;
+import be.technobel.ylorth.reservastock_rest.bll.exception.NotFoundException;
+import be.technobel.ylorth.reservastock_rest.dal.models.RequestEntity;
 import be.technobel.ylorth.reservastock_rest.dal.models.Role;
-import be.technobel.ylorth.reservastock_rest.dal.models.Room;
+import be.technobel.ylorth.reservastock_rest.dal.models.RoomEntity;
 import be.technobel.ylorth.reservastock_rest.pl.models.ConfirmForm;
 import be.technobel.ylorth.reservastock_rest.pl.models.RequestForm;
 import be.technobel.ylorth.reservastock_rest.dal.repository.RequestRepository;
@@ -41,19 +41,19 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<Request> getAllUnconfirmed() {
+    public List<RequestEntity> getAllUnconfirmed() {
         return requestRepository.getAllUnconfirmed().stream()
                 .collect(Collectors.toList());
     }
     @Override
-    public List<Request> getAllByUser(String username){
+    public List<RequestEntity> getAllByUser(String username){
         return requestRepository.findAll().stream()
-                .filter(d -> d.getUser().equals( userRepository.findByLogin(username).get()))
+                .filter(d -> d.getUserEntity().equals( userRepository.findByLogin(username).get()))
                 .toList();
     }
 
     @Override
-    public Request getOne(Long id) {
+    public RequestEntity getOne(Long id) {
         return requestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("request not found"));
     }
@@ -63,17 +63,17 @@ public class RequestServiceImpl implements RequestService {
         if( form == null )
             throw new IllegalArgumentException("form should not be null");
 
-        Request entity = new Request();
+        RequestEntity entity = new RequestEntity();
 
         entity.setMinutes(form.getMinutes());
         entity.setRequestReason(form.getRequestReason());
         entity.setStartTime(form.getStartTime());
 
-        entity.setMaterials(
+        entity.setMaterialEntities(
                 new HashSet<>(materialRepository.findAllById(form.getMaterials()))
         );
-        entity.setUser(userRepository.findByLogin(authentication.getPrincipal().toString()).get());
-        entity.setRoom(roomRepository.findById(form.getRoom()).get());
+        entity.setUserEntity(userRepository.findByLogin(authentication.getPrincipal().toString()).get());
+        entity.setRoomEntity(roomRepository.findById(form.getRoom()).get());
 
         entity=verification(entity);
         requestRepository.save(entity);
@@ -86,12 +86,12 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public HttpStatus confirm(ConfirmForm form, Long id, String login) {
-        Request entity = requestRepository.findById(id).get();
+        RequestEntity entity = requestRepository.findById(id).get();
 
         if(form.getRoom()==null)
-            form.setRoom(entity.getRoom().getId());
+            form.setRoom(entity.getRoomEntity().getId());
 
-        entity.setRoom(roomRepository.findById(form.getRoom()).get());
+        entity.setRoomEntity(roomRepository.findById(form.getRoom()).get());
         entity = verification(entity);
 
         if(form.isValid() && entity.getRefusalReason()==null)
@@ -99,7 +99,7 @@ public class RequestServiceImpl implements RequestService {
         else if(entity.getRefusalReason()==null)
             entity.setRefusalReason(form.getRefusalReason());
 
-        entity.setRoom(roomRepository.findById(form.getRoom()).get());
+        entity.setRoomEntity(roomRepository.findById(form.getRoom()).get());
 
         requestRepository.save(entity);
 
@@ -112,9 +112,9 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public void delete(Long id, Authentication authentication) {
         if( !requestRepository.existsById(id) )
-            throw new NotFoundException("Request not found");
+            throw new NotFoundException("RequestEntity not found");
 
-        if(requestRepository.findById(id).get().getUser().getLogin().equals(authentication.getPrincipal().toString()) || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+        if(requestRepository.findById(id).get().getUserEntity().getLogin().equals(authentication.getPrincipal().toString()) || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
             requestRepository.deleteById(id);
     }
 
@@ -123,76 +123,76 @@ public class RequestServiceImpl implements RequestService {
         if( form == null )
             throw new IllegalArgumentException("form should not be null");
 
-        if( !requestRepository.findById(id).get().getUser().getLogin().equals(authentication.getPrincipal().toString()) )
+        if( !requestRepository.findById(id).get().getUserEntity().getLogin().equals(authentication.getPrincipal().toString()) )
             throw new IllegalArgumentException("not allowed to update this request");
-        Request entity = new Request();
+        RequestEntity entity = new RequestEntity();
 
         entity.setMinutes(form.getMinutes());
         entity.setRequestReason(form.getRequestReason());
         entity.setStartTime(form.getStartTime());
 
-        entity.setMaterials(
+        entity.setMaterialEntities(
                 new HashSet<>(materialRepository.findAllById(form.getMaterials()))
         );
-        entity.setUser(userRepository.findByLogin(authentication.getPrincipal().toString()).get());
-        entity.setRoom(roomRepository.findById(form.getRoom()).get());
+        entity.setUserEntity(userRepository.findByLogin(authentication.getPrincipal().toString()).get());
+        entity.setRoomEntity(roomRepository.findById(form.getRoom()).get());
 
         entity.setId(id);
         requestRepository.save(verification(entity));
     }
 
-    private Request verification(Request entity){
+    private RequestEntity verification(RequestEntity entity){
 
         //List of concordant rooms
 
-        Set<Room> concordantRooms = correspondingRooms(entity);
+        Set<RoomEntity> concordantRoomEntities = correspondingRooms(entity);
 
         //if request is validate (have an id), put this room
         if(entity.getId()>0) {
-            concordantRooms.removeAll(concordantRooms);
-            concordantRooms.add(entity.getRoom());
+            concordantRoomEntities.removeAll(concordantRoomEntities);
+            concordantRoomEntities.add(entity.getRoomEntity());
         }
 
         //if there is no concordant room, set refusal reason
-        if(concordantRooms.size()==0)
+        if(concordantRoomEntities.size()==0)
             entity.setRefusalReason("No room found with the required material");
 
 
         //list of validated request with corresponding room on the request moment
-        List<Request> validatedConcordantRoomRequest = new ArrayList<>();
+        List<RequestEntity> validatedConcordantRoomRequestEntity = new ArrayList<>();
 
         //set of occupied room
-        Set<Room> occupiedRoom = new HashSet<>();
+        Set<RoomEntity> occupiedRoomEntity = new HashSet<>();
 
-        concordantRooms.forEach(room ->  {
+        concordantRoomEntities.forEach(room ->  {
 
             requestRepository.findAll().stream()
-                    .filter(request -> room == request.getRoom() && request.getAdmin()!= null && request.getRequestReason()==null)
+                    .filter(request -> room == request.getRoomEntity() && request.getAdmin()!= null && request.getRequestReason()==null)
                     .forEach(demande -> {
                         if(!(entity.getStartTime().plusMinutes(entity.getMinutes()).isBefore(demande.getStartTime()) || entity.getStartTime().isAfter(demande.getStartTime().plusMinutes(demande.getMinutes())))) {
-                            occupiedRoom.add(room);
-                            validatedConcordantRoomRequest.add(demande);
+                            occupiedRoomEntity.add(room);
+                            validatedConcordantRoomRequestEntity.add(demande);
                         }
                     });
         });
 
         /*
-        -> if occupiedRoom < concordantRoom: at least one room is free for the request
+        -> if occupiedRoomEntity < concordantRoom: at least one room is free for the request
         -> if non, look if request made by professor
         -> if no match, set refusal reason
          */
 
-        if(occupiedRoom.size()== concordantRooms.size() && (entity.getUser().getRoles().contains(Role.PROFESSOR) || entity.getUser().getRoles().contains(Role.ADMIN))){
-            for (Room room : occupiedRoom) {
+        if(occupiedRoomEntity.size()== concordantRoomEntities.size() && (entity.getUserEntity().getRoles().contains(Role.PROFESSOR) || entity.getUserEntity().getRoles().contains(Role.ADMIN))){
+            for (RoomEntity roomEntity : occupiedRoomEntity) {
 
-                //list of request who have the same room
-                List<Request> requestValideeParSalle = validatedConcordantRoomRequest.stream()
-                        .filter(demande -> demande.getRoom()== room)
+                //list of request who have the same roomEntity
+                List<RequestEntity> requestEntityValideeParSalle = validatedConcordantRoomRequestEntity.stream()
+                        .filter(demande -> demande.getRoomEntity()== roomEntity)
                         .toList();
 
                 //search of request made by professors
-                List<Request> requestProf = requestValideeParSalle.stream()
-                        .filter(demande -> demande.getUser().getRoles().contains(Role.PROFESSOR))
+                List<RequestEntity> requestEntityProf = requestEntityValideeParSalle.stream()
+                        .filter(demande -> demande.getUserEntity().getRoles().contains(Role.PROFESSOR))
                         .toList();
 
                 /*
@@ -200,64 +200,64 @@ public class RequestServiceImpl implements RequestService {
                 there are only those of students. we delete them to put that of the teacher
                 */
 
-                if(requestProf.size()==0) {
-                    requestValideeParSalle.stream()
+                if(requestEntityProf.size()==0) {
+                    requestEntityValideeParSalle.stream()
                             .forEach(d -> {
-                                d.setRefusalReason("Request cancelled");
+                                d.setRefusalReason("RequestEntity cancelled");
                                 requestRepository.save(d);
                                 entity.setRefusalReason(null);
                             });
                     return entity;
                 }
             }
-        } else if (occupiedRoom.size()== concordantRooms.size()) {
+        } else if (occupiedRoomEntity.size()== concordantRoomEntities.size()) {
             entity.setRefusalReason("No room available found!");
         }
         return entity;
     }
 
-    private Set<Room> correspondingRooms(Request entity){
+    private Set<RoomEntity> correspondingRooms(RequestEntity entity){
 
         //Rooms with same capacity
-        Set<Room> concordantRooms = roomRepository.findAllByCapacity(entity.getRoom().getCapacity());
+        Set<RoomEntity> concordantRoomEntities = roomRepository.findAllByCapacity(entity.getRoomEntity().getCapacity());
 
         //removed rooms who haven't required material
-        return concordantRooms.stream()
-                .filter(r -> r.getContains().containsAll(entity.getMaterials()))
-                .filter(r -> !(entity.getUser().getRoles().contains(Role.STUDENT)&& r.isForStaff()))
+        return concordantRoomEntities.stream()
+                .filter(r -> r.getContains().containsAll(entity.getMaterialEntities()))
+                .filter(r -> !(entity.getUserEntity().getRoles().contains(Role.STUDENT)&& r.isForStaff()))
                 .collect(Collectors.toSet());
 
     }
 
-    public List<Room> freeCorrespondingRooms(Long id){
+    public List<RoomEntity> freeCorrespondingRooms(Long id){
 
-        Request entity = requestRepository.findById(id).get();
+        RequestEntity entity = requestRepository.findById(id).get();
         //Rooms with same capacity
 
-        Set<Room> correspondingRooms =correspondingRooms(entity);
+        Set<RoomEntity> correspondingRoomEntities =correspondingRooms(entity);
 
         //If no room with needed material
-        if(correspondingRooms.size()==0)
+        if(correspondingRoomEntities.size()==0)
             entity.setRefusalReason("Pas de salles contenant le materiel nécessaire");
 
-        List<Request> requestOfTheDay = requestRepository.findAll().stream()
+        List<RequestEntity> requestEntityOfTheDay = requestRepository.findAll().stream()
                 .filter(d -> d.getStartTime().getYear()==entity.getStartTime().getYear())
                 .filter(d -> d.getStartTime().getDayOfYear()==entity.getStartTime().getDayOfYear())
-                .filter(d -> d.getRoom().getCapacity()==entity.getRoom().getCapacity())
+                .filter(d -> d.getRoomEntity().getCapacity()==entity.getRoomEntity().getCapacity())
                 .filter(d -> d.getAdmin()!=null)
                 .toList();
 
-        Set<Room> freeCorrespondingRooms = new HashSet<>();
+        Set<RoomEntity> freeCorrespondingRoomEntities = new HashSet<>();
 
-        for (Room room : correspondingRooms) {
-            for (Request acceptedRequest : requestOfTheDay) {
-                if(acceptedRequest.getRoom().getId()!= room.getId() || (acceptedRequest.getStartTime().isAfter(entity.getStartTime().plusMinutes(entity.getMinutes())) || acceptedRequest.getStartTime().plusMinutes(acceptedRequest.getMinutes()).isBefore(entity.getStartTime()))){
-                    freeCorrespondingRooms.add(room);
+        for (RoomEntity roomEntity : correspondingRoomEntities) {
+            for (RequestEntity acceptedRequestEntity : requestEntityOfTheDay) {
+                if(acceptedRequestEntity.getRoomEntity().getId()!= roomEntity.getId() || (acceptedRequestEntity.getStartTime().isAfter(entity.getStartTime().plusMinutes(entity.getMinutes())) || acceptedRequestEntity.getStartTime().plusMinutes(acceptedRequestEntity.getMinutes()).isBefore(entity.getStartTime()))){
+                    freeCorrespondingRoomEntities.add(roomEntity);
                 }
             }
         }
 
-        return correspondingRooms.stream()
+        return correspondingRoomEntities.stream()
                 .collect(Collectors.toList());
     }
 }

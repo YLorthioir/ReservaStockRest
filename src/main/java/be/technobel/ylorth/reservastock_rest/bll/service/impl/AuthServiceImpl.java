@@ -1,10 +1,10 @@
 package be.technobel.ylorth.reservastock_rest.bll.service.impl;
 
-import be.technobel.ylorth.reservastock_rest.exception.EmailAlreadyTakenException;
-import be.technobel.ylorth.reservastock_rest.dal.models.Adress;
-import be.technobel.ylorth.reservastock_rest.dal.models.ResetValidator;
+import be.technobel.ylorth.reservastock_rest.bll.exception.EmailAlreadyTakenException;
+import be.technobel.ylorth.reservastock_rest.dal.models.AdressEntity;
+import be.technobel.ylorth.reservastock_rest.dal.models.ResetValidatorEntity;
 import be.technobel.ylorth.reservastock_rest.dal.models.Role;
-import be.technobel.ylorth.reservastock_rest.dal.models.User;
+import be.technobel.ylorth.reservastock_rest.dal.models.UserEntity;
 import be.technobel.ylorth.reservastock_rest.pl.models.LoginForm;
 import be.technobel.ylorth.reservastock_rest.pl.models.RegisterForm;
 import be.technobel.ylorth.reservastock_rest.dal.repository.AdressRepository;
@@ -15,7 +15,7 @@ import be.technobel.ylorth.reservastock_rest.pl.JwtProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import be.technobel.ylorth.reservastock_rest.pl.models.AuthDTO;
+import be.technobel.ylorth.reservastock_rest.pl.models.Auth;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -54,32 +54,32 @@ public class AuthServiceImpl implements AuthService {
         if( userRepository.existsByEmail(form.getEmail()))
             throw new EmailAlreadyTakenException();
 
-        Adress adress = new Adress();
+        AdressEntity adressEntity = new AdressEntity();
 
-        adress.setNumber(form.getNumber());
-        adress.setStreet(form.getStreet());
-        adress.setCountry(form.getCountry());
-        adress.setPostCode(form.getPostCode());
-        adress.setCity(form.getCity());
+        adressEntity.setNumber(form.getNumber());
+        adressEntity.setStreet(form.getStreet());
+        adressEntity.setCountry(form.getCountry());
+        adressEntity.setPostCode(form.getPostCode());
+        adressEntity.setCity(form.getCity());
 
-        adress = adressRepository.save(adress);
+        adressEntity = adressRepository.save(adressEntity);
 
-        User user = new User();
+        UserEntity userEntity = new UserEntity();
 
-        user.setAdress(adress);
-        user.setEmail(form.getEmail());
-        user.setFirstName(form.getFirstName());
-        user.setLastName(form.getLastName());
-        user.setBirthdate(form.getBirthdate());
-        user.setPhone(form.getPhone());
+        userEntity.setAdressEntity(adressEntity);
+        userEntity.setEmail(form.getEmail());
+        userEntity.setFirstName(form.getFirstName());
+        userEntity.setLastName(form.getLastName());
+        userEntity.setBirthdate(form.getBirthdate());
+        userEntity.setPhone(form.getPhone());
 
         String login = form.getLastName().substring(0,3).concat(form.getFirstName().substring(0,3)).concat(String.valueOf(form.getBirthdate().getDayOfYear()));
 
-        user.setEnabled(true);
-        user.setLogin(login);
-        user.setRoles(form.getRoles());
-        user.setPassword( passwordEncoder.encode(form.getPassword()) );
-        user = userRepository.save( user );
+        userEntity.setEnabled(true);
+        userEntity.setLogin(login);
+        userEntity.setRoles(form.getRoles());
+        userEntity.setPassword( passwordEncoder.encode(form.getPassword()) );
+        userEntity = userRepository.save(userEntity);
     }
 
     @Override
@@ -87,36 +87,36 @@ public class AuthServiceImpl implements AuthService {
         if( userRepository.existsByEmail(form.getEmail()))
             throw new EmailAlreadyTakenException();
 
-        Adress adress = new Adress();
+        AdressEntity adressEntity = new AdressEntity();
 
-        adress.setNumber(form.getNumber());
-        adress.setStreet(form.getStreet());
-        adress.setCountry(form.getCountry());
-        adress.setPostCode(form.getPostCode());
-        adress.setCity(form.getCity());
+        adressEntity.setNumber(form.getNumber());
+        adressEntity.setStreet(form.getStreet());
+        adressEntity.setCountry(form.getCountry());
+        adressEntity.setPostCode(form.getPostCode());
+        adressEntity.setCity(form.getCity());
 
-        adress = adressRepository.save(adress);
+        adressEntity = adressRepository.save(adressEntity);
 
-        User user = new User();
+        UserEntity userEntity = new UserEntity();
 
-        user.setAdress(adress);
-        user.setEmail(form.getEmail());
-        user.setFirstName(form.getFirstName());
-        user.setLastName(form.getLastName());
-        user.setBirthdate(form.getBirthdate());
-        user.setPhone(form.getPhone());
+        userEntity.setAdressEntity(adressEntity);
+        userEntity.setEmail(form.getEmail());
+        userEntity.setFirstName(form.getFirstName());
+        userEntity.setLastName(form.getLastName());
+        userEntity.setBirthdate(form.getBirthdate());
+        userEntity.setPhone(form.getPhone());
 
         String login = form.getLastName().substring(0,3).concat(form.getFirstName().substring(0,3)).concat(String.valueOf(form.getBirthdate().getDayOfYear()));
 
-        user.setLogin(login);
-        user.setPassword( passwordEncoder.encode(form.getPassword()) );
-        user.getRoles().add(Role.STUDENT);
-        user = userRepository.save( user );
+        userEntity.setLogin(login);
+        userEntity.setPassword( passwordEncoder.encode(form.getPassword()) );
+        userEntity.getRoles().add(Role.STUDENT);
+        userEntity = userRepository.save(userEntity);
 
         String texte = " Bonjour,\n" +
                 "votre compte a bien été créé.\n" +
                 "Votre compte est maintenant en attente de validation";
-        //emailService.sendMessage(user.getEmail(), "Compte créé", texte);
+        //emailService.sendMessage(userEntity.getEmail(), "Compte créé", texte);
 
     }
 
@@ -126,19 +126,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthDTO login(LoginForm form) {
+    public Auth login(LoginForm form) {
         System.out.println("Service:"+ form);
         authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(form.getLogin(),form.getPassword()) );
 
-        User user = userRepository.findByLogin(form.getLogin() )
+        UserEntity userEntity = userRepository.findByLogin(form.getLogin() )
                 .orElseThrow();
 
-        String token = jwtProvider.generateToken(user.getUsername(), List.copyOf(user.getRoles()) );
+        String token = jwtProvider.generateToken(userEntity.getUsername(), List.copyOf(userEntity.getRoles()) );
 
-        return AuthDTO.builder()
+        return Auth.builder()
                 .token(token)
-                .login(user.getLogin())
-                .roles(user.getRoles())
+                .login(userEntity.getLogin())
+                .roles(userEntity.getRoles())
                 .build();
     }
 
@@ -149,31 +149,31 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void validate(Long id) {
-        User user = userRepository.findById(id).get();
-        user.setEnabled(true);
-        userRepository.save(user);
+        UserEntity userEntity = userRepository.findById(id).get();
+        userEntity.setEnabled(true);
+        userRepository.save(userEntity);
         String texte = " Bonjour,\n" +
                 "votre compte a bien été validé.\n" +
                 "Vous pouvez dès lors vous connecter à votre compte";
-        emailService.sendMessage(user.getEmail(), "Compte validé", texte);
+        emailService.sendMessage(userEntity.getEmail(), "Compte validé", texte);
     }
 
     @Override
     public void unValidate(Long id) {
-        User user = userRepository.findById(id).get();
-        user.setEnabled(false);
-        userRepository.save(user);
+        UserEntity userEntity = userRepository.findById(id).get();
+        userEntity.setEnabled(false);
+        userRepository.save(userEntity);
     }
 
     @Override
-    public List<User> getAllUnvalidate() {
+    public List<UserEntity> getAllUnvalidate() {
         return userRepository.getAllUnvalidate().stream()
                 .collect(Collectors.toList());
     }
 
     @Override
     public void sendPasswordMail(String login) {
-        User user = userRepository.findByLogin(login).get();
+        UserEntity userEntity = userRepository.findByLogin(login).get();
 
         if(resetValidatorRepository.existsByLogin(userRepository.findByLogin(login).get().getLogin()))
             resetValidatorRepository.deleteById(resetValidatorRepository.findByLogin(login).getId());
@@ -182,22 +182,22 @@ public class AuthServiceImpl implements AuthService {
                 "Veuillez vous rendre ici pour changer de mot de passe: http://localhost:8080/swagger \n" +
                 "Si vous n'avez pas fait cette demande, veuillez ignorer ce mail";
 
-        //emailService.sendMessage(user.getEmail(), "reset mot de passe", texte);
+        //emailService.sendMessage(userEntity.getEmail(), "reset mot de passe", texte);
 
-        ResetValidator resetValidator = new ResetValidator();
-        resetValidator.setResetTime(LocalDateTime.now());
-        resetValidator.setLogin(login);
+        ResetValidatorEntity resetValidatorEntity = new ResetValidatorEntity();
+        resetValidatorEntity.setResetTime(LocalDateTime.now());
+        resetValidatorEntity.setLogin(login);
 
-        resetValidatorRepository.save(resetValidator);
+        resetValidatorRepository.save(resetValidatorEntity);
     }
 
     @Override
     public void resetPassword(String password, String email) {
 
         if(resetValidatorRepository.existsByLogin(userRepository.findByEmail(email).get().getLogin()) && (LocalDateTime.now().isBefore(resetValidatorRepository.findByLogin(userRepository.findByEmail(email).get().getLogin()).getResetTime().plusMinutes(10)))){
-            User user = userRepository.findByEmail(email).get();
-            user.setPassword(passwordEncoder.encode(password));
-            userRepository.save(user);
+            UserEntity userEntity = userRepository.findByEmail(email).get();
+            userEntity.setPassword(passwordEncoder.encode(password));
+            userRepository.save(userEntity);
             resetValidatorRepository.deleteById(resetValidatorRepository.findByLogin(userRepository.findByEmail(email).get().getLogin()).getId());
 
         }else if(resetValidatorRepository.existsByLogin(userRepository.findByEmail(email).get().getLogin()))

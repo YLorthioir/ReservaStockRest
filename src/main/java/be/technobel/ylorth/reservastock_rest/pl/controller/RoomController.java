@@ -1,7 +1,6 @@
 package be.technobel.ylorth.reservastock_rest.pl.controller;
 
-import be.technobel.ylorth.reservastock_rest.pl.models.RequestDTO;
-import be.technobel.ylorth.reservastock_rest.pl.models.RoomDTO;
+import be.technobel.ylorth.reservastock_rest.pl.models.Room;
 import be.technobel.ylorth.reservastock_rest.pl.models.RoomForm;
 import be.technobel.ylorth.reservastock_rest.bll.service.RoomService;
 import jakarta.validation.Valid;
@@ -22,13 +21,13 @@ public class RoomController {
     }
 
     @GetMapping("/all")
-    public List<RoomDTO> getAll(){
-        return roomService.getAll().stream().map(RoomDTO::fromBLL).toList();
+    public List<Room> getAll(){
+        return roomService.getAll().stream().map(Room::fromBLL).toList();
     }
 
     @GetMapping("/{id:[0-9]+}")
-    public RoomDTO getOne(@PathVariable long id){
-        return RoomDTO.fromBLL(roomService.getOne(id));
+    public Room getOne(@PathVariable long id){
+        return Room.fromBLL(roomService.getOne(id));
     }
 
     @PostMapping("/add")

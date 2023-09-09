@@ -1,9 +1,8 @@
 package be.technobel.ylorth.reservastock_rest.bll.service.impl;
 
 import be.technobel.ylorth.reservastock_rest.bll.service.MaterialService;
-import be.technobel.ylorth.reservastock_rest.exception.NotFoundException;
-import be.technobel.ylorth.reservastock_rest.pl.models.MaterialDTO;
-import be.technobel.ylorth.reservastock_rest.dal.models.Material;
+import be.technobel.ylorth.reservastock_rest.bll.exception.NotFoundException;
+import be.technobel.ylorth.reservastock_rest.dal.models.MaterialEntity;
 import be.technobel.ylorth.reservastock_rest.dal.repository.MaterialRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,20 +19,20 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public List<Material> getAll() {
+    public List<MaterialEntity> getAll() {
         return materialRepository.findAll().stream()
                 .toList();
     }
 
     @Override
-    public Material getOne(Long id) {
+    public MaterialEntity getOne(Long id) {
         return materialRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("material not found"));
     }
 
     @Override
     public void insert(String name) {
-        Material entity = new Material();
+        MaterialEntity entity = new MaterialEntity();
         entity.setName(name);
         materialRepository.save(entity);
     }
@@ -41,7 +40,7 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public HttpStatus delete(long id) {
         if( !materialRepository.existsById(id) )
-            throw new NotFoundException("Material not found");
+            throw new NotFoundException("MaterialEntity not found");
         try{
             materialRepository.deleteById(id);
             return HttpStatus.CREATED;

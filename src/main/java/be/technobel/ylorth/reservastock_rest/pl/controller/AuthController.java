@@ -1,6 +1,6 @@
 package be.technobel.ylorth.reservastock_rest.pl.controller;
 
-import be.technobel.ylorth.reservastock_rest.pl.models.AuthDTO;
+import be.technobel.ylorth.reservastock_rest.pl.models.Auth;
 import be.technobel.ylorth.reservastock_rest.pl.models.UserDTO;
 import be.technobel.ylorth.reservastock_rest.pl.models.LoginForm;
 import be.technobel.ylorth.reservastock_rest.pl.models.RegisterForm;
@@ -24,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthDTO> login(@RequestBody @Valid LoginForm form){
+    public ResponseEntity<Auth> login(@RequestBody @Valid LoginForm form){
         return ResponseEntity.ok(authService.login(form));
     }
     @PostMapping("/register")

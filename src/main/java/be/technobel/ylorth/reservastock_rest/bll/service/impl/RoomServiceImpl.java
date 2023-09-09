@@ -1,7 +1,7 @@
 package be.technobel.ylorth.reservastock_rest.bll.service.impl;
 
-import be.technobel.ylorth.reservastock_rest.exception.NotFoundException;
-import be.technobel.ylorth.reservastock_rest.dal.models.Room;
+import be.technobel.ylorth.reservastock_rest.bll.exception.NotFoundException;
+import be.technobel.ylorth.reservastock_rest.dal.models.RoomEntity;
 import be.technobel.ylorth.reservastock_rest.pl.models.RoomForm;
 import be.technobel.ylorth.reservastock_rest.dal.repository.MaterialRepository;
 import be.technobel.ylorth.reservastock_rest.dal.repository.RoomRepository;
@@ -23,15 +23,15 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<Room> getAll() {
+    public List<RoomEntity> getAll() {
         return roomRepository.findAll().stream()
                 .toList();
     }
 
     @Override
-    public Room getOne(Long id) {
+    public RoomEntity getOne(Long id) {
         return roomRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Room not found"));
+                .orElseThrow(() -> new NotFoundException("RoomEntity not found"));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class RoomServiceImpl implements RoomService {
         if( form == null )
             throw new IllegalArgumentException("form should not be null");
 
-        Room entity = new Room();
+        RoomEntity entity = new RoomEntity();
 
         entity.setName(form.getName());
         entity.setCapacity(form.getCapacity());
@@ -52,7 +52,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void update(RoomForm form, Long id) {
 
-        Room entity = new Room();
+        RoomEntity entity = new RoomEntity();
 
         entity.setName(form.getName());
         entity.setCapacity(form.getCapacity());

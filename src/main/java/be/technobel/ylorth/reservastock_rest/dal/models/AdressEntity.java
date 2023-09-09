@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
+@Entity (name = "Adress")
 @Getter @Setter
-public class Adress {
+public class AdressEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "adress_id", nullable = false, unique = true)
