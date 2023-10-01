@@ -1,4 +1,4 @@
-package be.technobel.ylorth.reservastock_rest.pl.controller;
+package be.technobel.ylorth.reservastock_rest.pl.rest;
 
 import be.technobel.ylorth.reservastock_rest.pl.models.Material;
 import be.technobel.ylorth.reservastock_rest.bll.service.MaterialService;

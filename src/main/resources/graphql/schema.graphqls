@@ -1,0 +1,20 @@
+directive @NotBlank(message: String! = "The field %s is required") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+type Material{
+    id: ID!
+    name: String!
+}
+
+type Room {
+    id: ID!
+    capacity: Int!
+    name: String!
+    forStaff: Boolean!
+    contains: [Material]
+}
+
+type Query {
+    room(id: ID!): Room
+    material(id: ID!): Material
+    materials: [Material]
+}
