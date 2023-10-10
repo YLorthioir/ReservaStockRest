@@ -13,7 +13,7 @@ public interface AuthService {
     boolean checkEmailNotTaken(String email);
     Auth login(LoginForm form);
     Long findByLogin(String login);
-    void validate(Long id);
+   // void validate(Long id);
     void unValidate(Long id);
     List<UserEntity>  getAllUnvalidate();
     void sendPasswordMail(String login);

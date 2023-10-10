@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmailServiceImpl {
-
+/*
     private final MailSender mailSender;
 
     public EmailServiceImpl(MailSender mailSender) {
@@ -26,7 +26,9 @@ public class EmailServiceImpl {
             System.out.println(e);
             throw new IllegalStateException("failed to send email");
         }
-    }
 
+
+    }
+*/
 
 }

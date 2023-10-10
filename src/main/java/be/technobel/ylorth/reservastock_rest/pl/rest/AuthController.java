@@ -41,10 +41,10 @@ public class AuthController {
     public List<UserDTO> toValidate(){
         return authService.getAllUnvalidate().stream().map(UserDTO::fromBLL).toList();
     }
-    @PostMapping("/validate/{id:[0-9]+}")
+    /*@PostMapping("/validate/{id:[0-9]+}")
     public void validate(@PathVariable long id){
         authService.validate(id);
-    }
+    }*/
     @PostMapping("/unValidate/{id:[0-9]+}")
     public void unValidate(@PathVariable long id){
         authService.unValidate(id);

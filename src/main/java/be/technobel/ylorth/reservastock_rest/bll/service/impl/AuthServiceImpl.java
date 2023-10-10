@@ -30,7 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
-    private final EmailServiceImpl emailService;
+ //   private final EmailServiceImpl emailService;
     private final AdressRepository adressRepository;
     private final ResetValidatorRepository resetValidatorRepository;
 
@@ -44,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtProvider = jwtProvider;
-        this.emailService = emailService;
+ //       this.emailService = emailService;
         this.adressRepository = adressRepository;
         this.resetValidatorRepository = resetValidatorRepository;
     }
@@ -146,7 +146,7 @@ public class AuthServiceImpl implements AuthService {
     public Long findByLogin(String login) {
         return userRepository.findByLogin(login).get().getId();
     }
-
+/*
     @Override
     public void validate(Long id) {
         UserEntity userEntity = userRepository.findById(id).get();
@@ -157,7 +157,7 @@ public class AuthServiceImpl implements AuthService {
                 "Vous pouvez dès lors vous connecter à votre compte";
         emailService.sendMessage(userEntity.getEmail(), "Compte validé", texte);
     }
-
+*/
     @Override
     public void unValidate(Long id) {
         UserEntity userEntity = userRepository.findById(id).get();
