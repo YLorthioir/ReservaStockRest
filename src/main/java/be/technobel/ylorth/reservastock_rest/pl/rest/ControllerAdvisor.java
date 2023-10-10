@@ -9,10 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ControllerAdvisor {
 
     @ExceptionHandler(NotFoundException.class)
@@ -28,7 +29,6 @@ public class ControllerAdvisor {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType( MediaType.APPLICATION_JSON );
 
-//        return new ResponseEntity<>(error, headers, HttpStatus.NOT_FOUND);
         return ResponseEntity.status( HttpStatus.NOT_FOUND )
                 .headers( headers )
                 .body(error);
