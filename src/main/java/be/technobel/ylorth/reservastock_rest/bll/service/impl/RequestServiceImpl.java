@@ -5,12 +5,16 @@ import be.technobel.ylorth.reservastock_rest.bll.exception.NotFoundException;
 import be.technobel.ylorth.reservastock_rest.dal.models.RequestEntity;
 import be.technobel.ylorth.reservastock_rest.dal.models.Role;
 import be.technobel.ylorth.reservastock_rest.dal.models.RoomEntity;
+import be.technobel.ylorth.reservastock_rest.dal.models.UserEntity;
 import be.technobel.ylorth.reservastock_rest.pl.models.ConfirmForm;
 import be.technobel.ylorth.reservastock_rest.pl.models.RequestForm;
 import be.technobel.ylorth.reservastock_rest.dal.repository.RequestRepository;
 import be.technobel.ylorth.reservastock_rest.dal.repository.MaterialRepository;
 import be.technobel.ylorth.reservastock_rest.dal.repository.RoomRepository;
 import be.technobel.ylorth.reservastock_rest.dal.repository.UserRepository;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -42,20 +46,34 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<RequestEntity> getAllUnconfirmed() {
-        return requestRepository.getAllUnconfirmed().stream()
-                .collect(Collectors.toList());
+
+        Specification<RequestEntity> spec = (root, query, criteriaBuilder) -> criteriaBuilder.and(criteriaBuilder.isNull(root.get("admin")), criteriaBuilder.isNull(root.get("refusalReason")));
+
+        return requestRepository.findAll(spec);
+
+        //return requestRepository.getAllUnconfirmed();
     }
     @Override
     public List<RequestEntity> getAllByUser(String username){
-        return requestRepository.findAll().stream()
-                .filter(d -> d.getUserEntity().equals( userRepository.findByLogin(username).get()))
-                .toList();
+
+        Specification<RequestEntity> spec = ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("userEntity").get("login"), username));
+
+        return requestRepository.findAll(spec);
+
+//        return requestRepository.findAll().stream()
+//                .filter(d -> d.getUserEntity().equals( userRepository.findByLogin(username).get()))
+//                .toList();
     }
 
     @Override
     public RequestEntity getOne(Long id) {
-        return requestRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("request not found"));
+
+        Specification<RequestEntity> spec = (((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"),id)));
+
+        return requestRepository.findOne(spec).orElseThrow(() -> new NotFoundException("request not found"));
+
+//        return requestRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException("request not found"));
     }
 
     @Override
