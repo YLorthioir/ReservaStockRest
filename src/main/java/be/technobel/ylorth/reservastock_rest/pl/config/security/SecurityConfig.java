@@ -4,10 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,10 +14,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
+@EnableMethodSecurity(
         prePostEnabled = true)
 public class SecurityConfig {
     @Bean
@@ -31,7 +30,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
 
-        http.csrf().disable();
+        http.cors();
+
+        http.csrf(AbstractHttpConfigurer::disable);
 
         http.httpBasic().disable();
 
@@ -42,6 +43,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(
             registry -> registry
 
+
                     .requestMatchers(HttpMethod.POST,"/auth/login").anonymous()
                     .requestMatchers(HttpMethod.POST,"/auth/studentRegister").anonymous()
                     .requestMatchers(HttpMethod.POST,"/auth/sendPasswordMail").anonymous()
@@ -50,7 +52,6 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET,"/auth/toValidate").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST,"/auth/validate/{id:[0-9]+}").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST,"/auth/unValidate/{id:[0-9]+}").hasRole("ADMIN")
-
 
                     .requestMatchers(HttpMethod.POST, "/room/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PUT, "/room/**").hasRole("ADMIN")
@@ -67,7 +68,9 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET,"/request/**").authenticated()
                     .requestMatchers(HttpMethod.POST,"/request/**").authenticated()
 
-                    .requestMatchers( "/api/upload").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/api/upload").authenticated()
+
+                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
                     .requestMatchers( request -> request.getRequestURI().length() > 500 ).denyAll()
 

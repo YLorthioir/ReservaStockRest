@@ -10,9 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploadController {
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestPart("name") String nom,
-                                             @RequestPart("file") MultipartFile fichier) {
-        System.out.println(nom);
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile fichier) {
         System.out.println("Entrée controller Ok");
 
         return new ResponseEntity<>("Téléchargement réussi", HttpStatus.OK);
