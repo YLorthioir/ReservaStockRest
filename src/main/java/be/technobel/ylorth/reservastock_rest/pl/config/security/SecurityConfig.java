@@ -68,7 +68,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET,"/request/**").authenticated()
                     .requestMatchers(HttpMethod.POST,"/request/**").authenticated()
 
-                    .requestMatchers(HttpMethod.POST, "/api/upload").authenticated()
+                    //.requestMatchers(HttpMethod.POST, "/api/upload").authenticated()
 
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 

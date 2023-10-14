@@ -1,18 +1,62 @@
 package be.technobel.ylorth.reservastock_rest.pl;
 
+import be.technobel.ylorth.reservastock_rest.dal.models.FileEntity;
+import be.technobel.ylorth.reservastock_rest.dal.repository.FileRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class FileUploadController {
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile fichier) {
-        System.out.println("Entrée controller Ok");
+    private final FileRepository fileRepository;
 
-        return new ResponseEntity<>("Téléchargement réussi", HttpStatus.OK);
+    public FileUploadController(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestPart("file") MultipartFile fichier) {
+        try {
+            System.out.println("Entree controlleur");
+
+            FileEntity fileEntity = new FileEntity();
+            fileEntity.setNom(fichier.getOriginalFilename());
+            fileEntity.setContenu(fichier.getBytes());
+
+            fileRepository.save(fileEntity);
+
+            System.out.println("Téléchargement et enregistrement réussis");
+
+            return new ResponseEntity<>("Téléchargement et enregistrement réussis", HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>("Échec du téléchargement ou de l'enregistrement", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/download/{fileId}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable Long fileId) {
+        Optional<FileEntity> fichierOptional = fileRepository.findById(fileId);
+
+        if (fichierOptional.isPresent()) {
+            FileEntity fichier = fichierOptional.get();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDispositionFormData("attachment", fichier.getNom());
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(fichier.getContenu());
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
