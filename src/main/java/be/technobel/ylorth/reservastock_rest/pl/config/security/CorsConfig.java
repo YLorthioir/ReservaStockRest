@@ -20,7 +20,11 @@ public class CorsConfig {
         config.addAllowedHeader("Authorization");
         config.addAllowedHeader("Content-Type");
 
-        config.addAllowedMethod("*"); // Vous pouvez spécifier les méthodes HTTP autorisées
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("DELETE");
+
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
