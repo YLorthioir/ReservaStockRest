@@ -1,5 +1,6 @@
-package be.technobel.ylorth.reservastock_rest.pl;
+package be.technobel.ylorth.reservastock_rest.pl.rest;
 
+import be.technobel.ylorth.reservastock_rest.bll.exception.NotFoundException;
 import be.technobel.ylorth.reservastock_rest.dal.models.FileEntity;
 import be.technobel.ylorth.reservastock_rest.dal.repository.FileRepository;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +36,7 @@ public class FileUploadController {
 
             System.out.println("Téléchargement et enregistrement réussis");
 
-            return new ResponseEntity<>("Téléchargement et enregistrement réussis", HttpStatus.OK);
+            return ResponseEntity.ok("Téléchargement et enregistrement réussis");
         } catch (IOException e) {
             return new ResponseEntity<>("Échec du téléchargement ou de l'enregistrement", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -56,7 +57,7 @@ public class FileUploadController {
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(fichier.getContenu());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotFoundException("File not found");
         }
     }
 }
