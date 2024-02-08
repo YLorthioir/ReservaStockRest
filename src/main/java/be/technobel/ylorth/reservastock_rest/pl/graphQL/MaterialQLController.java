@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller
 public class MaterialQLController {
-    private MaterialRepository materialRepository;
+    private final MaterialRepository materialRepository;
 
     public MaterialQLController(MaterialRepository materialRepository) {
         this.materialRepository = materialRepository;
