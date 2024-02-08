@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
                            PasswordEncoder passwordEncoder,
                            AuthenticationManager authenticationManager,
                            JwtProvider jwtProvider,
-                           EmailServiceImpl emailService,
+                           //EmailServiceImpl emailService,
                            AdressRepository adressRepository, ResetValidatorRepository resetValidatorRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -127,7 +127,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Auth login(LoginForm form) {
-        System.out.println("Service:"+ form);
         authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(form.getLogin(),form.getPassword()) );
 
         UserEntity userEntity = userRepository.findByLogin(form.getLogin() )

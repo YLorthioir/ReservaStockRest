@@ -23,7 +23,7 @@ public class JwtProvider {
 
     private static final String JWT_SECRET = "UTC.ZO\"7%0u7.ieT_f`nsQd)8Z',yp/7k[N;#D%zgrY\"z{Bheg04(O)\"H&~W\"Jv";
     //Expired time: 15 minutes
-    private static final long EXPIRES_AT = 900_000;
+    private static final long EXPIRES_AT = 900;
     private static final String AUTH_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
 
@@ -39,6 +39,7 @@ public class JwtProvider {
                 .withExpiresAt( Instant.now().plusMillis(EXPIRES_AT) )
                 .withSubject(username)
                 .withClaim("roles", roles.stream().map(Enum::toString).toList())
+                .withAudience("http://localhost:4200")
                 .sign( Algorithm.HMAC512(JWT_SECRET) );
 
     }
@@ -62,6 +63,7 @@ public class JwtProvider {
                     .acceptExpiresAt( EXPIRES_AT )
                     .withClaimPresence("sub")
                     .withClaimPresence("roles")
+                    .withAudience("http://localhost:4200")
                     .build()
                     .verify( token );
 

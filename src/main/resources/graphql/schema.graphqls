@@ -1,4 +1,3 @@
-directive @NotBlank(message: String! = "The field %s is required") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
 type Material{
     id: ID!
@@ -14,7 +13,13 @@ type Room {
 }
 
 type Query {
+    rooms: [Room]
     room(id: ID!): Room
     material(id: ID!): Material
     materials: [Material]
 }
+
+type Mutation {
+    createMaterial(name: String!): Material
+}
+

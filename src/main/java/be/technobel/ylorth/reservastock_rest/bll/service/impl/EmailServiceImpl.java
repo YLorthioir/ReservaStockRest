@@ -4,9 +4,9 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class EmailServiceImpl {
-/*
+
     private final MailSender mailSender;
 
     public EmailServiceImpl(MailSender mailSender) {
@@ -29,6 +29,6 @@ public class EmailServiceImpl {
 
 
     }
-*/
+
 
 }
