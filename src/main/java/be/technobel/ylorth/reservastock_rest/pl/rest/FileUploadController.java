@@ -26,7 +26,6 @@ public class FileUploadController {
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestPart("file") MultipartFile fichier) {
         try {
-            System.out.println("Entree controlleur");
 
             FileEntity fileEntity = new FileEntity();
             fileEntity.setNom(fichier.getOriginalFilename());

@@ -68,14 +68,15 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET,"/request/**").authenticated()
                     .requestMatchers(HttpMethod.POST,"/request/**").authenticated()
 
-                    .requestMatchers(HttpMethod.POST, "/api/upload").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/api/upload").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/download/**").permitAll()
 
                     .requestMatchers(CorsUtils::isPreFlightRequest).authenticated()
 
                     .requestMatchers( request -> request.getRequestURI().length() > 500 ).denyAll()
 
                     // Si pas permitAll, swagger ne fonctionne pas
-                    .anyRequest().denyAll()
+                    .anyRequest().permitAll()
 
 
         );

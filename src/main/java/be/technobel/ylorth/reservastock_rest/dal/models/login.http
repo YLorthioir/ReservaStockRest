@@ -1,0 +1,10 @@
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "login": "admin",
+  "password": "Test1234="
+}
+
+###
+GET http://localhost:8080/request/allUnconfirmed
